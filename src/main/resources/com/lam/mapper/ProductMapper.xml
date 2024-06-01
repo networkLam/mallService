@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lam.mapper.ProductMapper">
+    <insert id="addProduct" parameterType="com.lam.pojo.Product">
+        insert into product(price,state,p_name,p_describe,picture_name,pd_type,time) values (#{price},#{state},#{p_name},#{p_describe},#{picture_name},#{pd_type},#{time});
+    </insert>
+    <!--    id mapper 中的接口方法 resultType 方法的返回类型-->
+    <update id="updateInformation" parameterType="com.lam.pojo.Product">
+        update product
+        <set>
+            <if test="price != null">price = #{price},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="p_name != null">p_name = #{p_name},</if>
+            <if test="p_describe != null">p_describe = #{p_describe},</if>
+            <if test="picture_name != null">picture_name = #{picture_name},</if>
+            <if test="pd_type != null">pd_type = #{pd_type},</if>
+            <if test="time != null">time = #{time},</if>
+        </set>
+        where pd_id = #{pd_id};
+    </update>
+</mapper>

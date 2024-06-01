@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lam.mapper.UserMapper">
+<!--    id mapper 中的接口方法 resultType 方法的返回类型-->
+    <select id="show" resultType="com.lam.pojo.User">
+    select * from user;
+    </select>
+</mapper>

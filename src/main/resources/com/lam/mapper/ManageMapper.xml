@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lam.mapper.ManageMapper">
+    <update id="updateInfo" parameterType="com.lam.pojo.Manager" >
+        update manager
+        <set>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="m_pwd != null">m_pwd = #{m_pwd},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="entry_time != null">entry_time = #{entry_time},</if>
+        </set>
+        where m_id = #{m_id};
+    </update>
+</mapper>
