@@ -24,7 +24,7 @@ public interface UserMapper {
     public int deleteUser(String id);
 
     @Insert("insert into user(phone,user_name,user_pwd,gender,register_time) values (#{phone},#{user_name},#{user_pwd},#{gender},#{register_time})")
-    public int userRegister(User user);
+    public int userRegister(User user) throws Exception;
 
     //    查询用户身份是否存在
     @Select("select UID,phone,user_name,user_pwd from user where phone = #{phone} and user_pwd = #{user_pwd} ")

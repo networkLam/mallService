@@ -19,7 +19,8 @@ public class ManagerController {
     private ManagerService managerService;
     @Autowired
     private ManageMapper manageMapper;
-//    该接口ok
+
+    //    该接口ok
     @PostMapping("/api/administrator/register")
     public Result Register(@RequestBody Manager manager) {
         int register = managerService.Register(manager.getPhone(), manager.getM_pwd());
@@ -29,20 +30,30 @@ public class ManagerController {
             return new Result("1", "success", "注册成功");
         }
     }
-// 该接口ok
+
+    // 该接口ok
     @PostMapping("/api/administrator/login")
-    public Result login(@RequestBody Manager manager){
-        List<Manager> login = manageMapper.login(manager.getPhone(),manager.getM_pwd());
-        HashMap<String,Object> claims = new HashMap<>();
-        claims.put("name",login.get(0).getName());
-        claims.put("phone",login.get(0).getPhone());
-        claims.put("id",login.get(0).getM_id());
-        claims.put("authorization","admin");//管理员的权限是标识是admin
-        if (login.isEmpty()){
+    public Result login(@RequestBody Manager manager) {
+        System.out.println(manager);
+        try {
+            List<Manager> login = manageMapper.login(manager.getPhone(), manager.getM_pwd());
+            if (login.isEmpty()) {
 //            account not exist
-            return  new Result("0","failed","账号或密码有误，请检查！");
+                return new Result("0", "failed", "账号或密码有误，请检查！");
+            }
+            HashMap<String, Object> claims = new HashMap<>();
+            claims.put("name", login.get(0).getName());
+            claims.put("phone", login.get(0).getPhone());
+            claims.put("id", login.get(0).getM_id());
+            claims.put("authorization", "admin");//管理员的权限是标识是admin
+            return new Result("1", "success", JwtUtil.jwtBuilder(claims));
+        } catch (Exception e) {
+
+            return Result.error("系统出错");
         }
-        return new Result("1","success",JwtUtil.jwtBuilder(claims));
+
+
+
 
     }
 }

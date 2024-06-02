@@ -11,7 +11,7 @@ import java.util.List;
 public interface ManageMapper {
 //    管理员登录
     @Select("select  * from manager where phone = #{phone} and m_pwd = #{m_pwd}")
-    public List<Manager> login(String phone,String m_pwd);
+    public List<Manager> login(String phone,String m_pwd) throws Exception;
 //注册管理员信息 （插入的时候报错该如何解决？）
     @Insert("insert into manager(phone, m_pwd, name, gender, entry_time) values (#{phone},#{m_pwd},#{name},#{gender},#{entry_time})")
     public void RegisterAdministrator(Manager manager) throws Exception;

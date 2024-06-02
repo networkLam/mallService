@@ -104,7 +104,7 @@ class MallDesignApplicationTests {
     }
 
     @Test
-    public void userRegisterTest() {
+    public void userRegisterTest() throws Exception {
 //        User user = new User();
 //        user.setUser_name("mayday");
 //        user.setUser_pwd("cgg");
@@ -124,9 +124,16 @@ class MallDesignApplicationTests {
 
     @Test
     public void manageLogin() {
-        List<Manager> login = manageMapper.login("10086", "167");
-        System.out.println(login.isEmpty());
-        System.out.println(login);
+        try {
+            List<Manager> login = manageMapper.login("10086", "167");
+            System.out.println(login.isEmpty());
+            System.out.println(login);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+
+        }
+
+
     }
 
     @Test

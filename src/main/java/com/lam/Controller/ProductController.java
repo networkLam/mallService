@@ -10,6 +10,7 @@ import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -85,6 +86,8 @@ public class ProductController {
     //add product
     @RequestMapping("/api/product/add")
     public Result productAdd(@RequestBody Product product) {
+        //System.out.println("是否能接收file");
+        //System.out.println(file);
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         //        判断该账号是否归属管理员
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {

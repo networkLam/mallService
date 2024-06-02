@@ -33,7 +33,7 @@ public class ManagerService {
         }
         return 1;
     }
-//update api
+//update api 此接口應該是用戶信息更新的，但不知道爲何沒有使用。
     public Boolean updateInfo(Manager manager){
         if(manager.getPhone().length() !=11){
             return false;

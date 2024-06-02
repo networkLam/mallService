@@ -27,7 +27,7 @@ public class UserService {
     @Autowired
     private AddressMapper addressMapper;
 
-    public int register(String phone, String pwd) {
+    public int register(String phone, String pwd) throws Exception {
         User user = new User();
         LocalDateTime dateTime = LocalDateTime.now();
         user.setPhone(phone);
@@ -35,6 +35,7 @@ public class UserService {
         user.setUser_name("defaultUser");
         user.setGender("other");
         user.setRegister_time(dateTime);
+
         return userMapper.userRegister(user);
     }
 //用户下单商品的业务逻辑

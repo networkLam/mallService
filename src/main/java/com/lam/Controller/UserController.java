@@ -50,8 +50,14 @@ public class UserController {
         if (userRegister.getPhone().isEmpty() || userRegister.getPwd().isEmpty()) {
             return new Result("0", "fail", "注册失败，请检查账号或密码！");
         } else {
-            userService.register(userRegister.getPhone(), userRegister.getPwd());
-            return new Result("0", "success", "注册成功");
+            try {
+                userService.register(userRegister.getPhone(), userRegister.getPwd());
+                return new Result("0", "success", "注册成功");
+            }catch (Exception e) {
+                return Result.error("注册失败，系统中已存在此账号。");
+            }
+
+
         }
     }
 //    购买商品
