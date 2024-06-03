@@ -2,12 +2,15 @@ package com.lam.Controller;
 
 import com.lam.Service.ManagerService;
 import com.lam.Utils.JwtUtil;
+import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.ManageMapper;
 import com.lam.pojo.Manager;
 import com.lam.pojo.Result;
+import com.lam.pojo.TokenUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -51,9 +54,17 @@ public class ManagerController {
 
             return Result.error("系统出错");
         }
+    }
 
+    //get manage information
+    @RequestMapping("/api/administrator/info")
+    public Result getInfo(){
+        //获取线程数据
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        //获取线程中的id
+        Integer id = tokenUserInfo.getId();
+        Manager info = manageMapper.getInfo(id);
 
-
-
+        return Result.success(info);
     }
 }

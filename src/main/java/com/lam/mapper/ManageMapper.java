@@ -26,6 +26,10 @@ public interface ManageMapper {
     public Manager belongAdmin(String phone);
 
 
+//    获取管理员的个人信息
+    @Select("select * from manager where m_id=#{id}")
+    public Manager getInfo(Integer id);
+
 
 
 }
