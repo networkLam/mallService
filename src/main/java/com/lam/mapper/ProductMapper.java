@@ -1,6 +1,7 @@
 package com.lam.mapper;
 
 import com.lam.pojo.Product;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,8 @@ public interface ProductMapper {
     @Select("select price from product where pd_id = #{pd_id}")
     public String productQuery(Integer pd_id) throws Exception;
 
-
+//    详情图片插入
+    @Insert("insert into picture(pt_path, pd_id) VALUES (#{pt_path},#{pd_id})")
+    public void detailPicture(String pt_path,Integer pd_id) throws Exception;
 
 }

@@ -117,4 +117,9 @@ public class ProductController {
         System.out.println("用户在搜索"+name);
         return Result.success("test interface ,please don't use in the productive environment");
     }
+
+//    @PostMapping("/api/uploads")
+//    public Result uploadPictures(){
+//
+//    }
 }

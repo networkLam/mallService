@@ -19,4 +19,23 @@ public class ProductService {
         }
 
     }
+
+    /*
+    * 详情页面的图片逻辑
+    * 当点击删除按钮的时候发送一个删除请求把选中的数据（id）发往服务器，再又服务器执行
+    * 添加图片则是先把图片全部上传到服务器，再由服务器把所有的图片数据返回（而不是在本地比较返回）
+    * */
+    public Boolean detailProductInsert(String[] paths,Integer pd_id){
+        for(String path:paths){
+            try {
+                //往数据库中插入图片
+                productMapper.detailPicture(path,pd_id);
+            }catch (Exception e){
+                //异常就结束插入
+                return false;
+            }
+        }
+        //完成插入返回true
+        return true;
+    }
 }
