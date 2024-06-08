@@ -76,9 +76,9 @@ public class UploadFile {
      *
      * */
     @PostMapping("/api/uploads")
-    public Result upload(@RequestPart MultipartFile[] files, Integer pd_id) {
+    public Result upload(@RequestPart MultipartFile[] files) {
         // String filePath = "";
-        System.out.println("pd_id is " + pd_id);
+       // System.out.println("pd_id is " + pd_id);
         // System.out.println(files.length);
         if (files.length == 0) {
             return Result.error("文件为空，提交失败");

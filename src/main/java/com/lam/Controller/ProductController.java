@@ -5,14 +5,13 @@ import com.lam.Utils.CheckPower;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.HandleMapper;
 import com.lam.mapper.ProductMapper;
-import com.lam.pojo.Product;
-import com.lam.pojo.Result;
-import com.lam.pojo.TokenUserInfo;
+import com.lam.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -102,6 +101,7 @@ public class ProductController {
         return new Result("1", "success", "录入成功！");
     }
 
+    //查询产品价格
     @RequestMapping("/api/product/price")
     public Result queryPrice(Integer id) {
         try {
@@ -118,8 +118,37 @@ public class ProductController {
         return Result.success("test interface ,please don't use in the productive environment");
     }
 
-//    @PostMapping("/api/uploads")
-//    public Result uploadPictures(){
-//
-//    }
+    //上传详情页的图片数据
+    @PostMapping("/api/uploads/detail")
+    public Result uploadPictures(@RequestBody Pictures pictures){
+        try{
+            productService.detailProductInsert(pictures.getPictures(),pictures.getPd_id());
+            return Result.success("详情图片写入成功");
+        }catch (Exception e){
+            return Result.error("详情图片写入失败");
+        }
+    }
+    //获取详情页的图片数据
+    @RequestMapping("/api/picture/detail")
+    public Result requestPictureDetail(Integer pd_id){
+        try{
+            List<PictureDetail> pictureDetails = productMapper.queryPicture(pd_id);
+            return Result.success(pictureDetails);
+        }catch (Exception e){
+            return Result.error("no relativity data");
+        }
+
+    }
+
+
+    //删除详情页图片的接口 get请求
+    @RequestMapping("/api/delete/picture")
+    public Result deletePicture(Integer pt_id){
+        try {
+            productMapper.deletePictureInfo(pt_id);
+            return Result.success("删除成功");
+        }catch (Exception e){
+            return Result.error("删除失败");
+        }
+    }
 }

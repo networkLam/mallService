@@ -1,6 +1,8 @@
 package com.lam.mapper;
 
+import com.lam.pojo.PictureDetail;
 import com.lam.pojo.Product;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -19,7 +21,7 @@ public interface ProductMapper {
     @Select("select count(*) from product")
     public int count();
 //分页
-    @Select("select * from product limit 5 offset #{start};")
+    @Select("select * from product order by pd_id desc limit 5 offset #{start}  ")
     public List<Product> dividePage(Integer start);
 
 //    allows information of some update
@@ -35,5 +37,12 @@ public interface ProductMapper {
 //    详情图片插入
     @Insert("insert into picture(pt_path, pd_id) VALUES (#{pt_path},#{pd_id})")
     public void detailPicture(String pt_path,Integer pd_id) throws Exception;
+//请求详情页面的图片
+
+    @Select("select * from picture where pd_id = #{pd_id}")
+    public List<PictureDetail> queryPicture(Integer pd_id) throws Exception;
+    //删除详情页的图片信息
+    @Delete("delete from picture where pt_id = #{pt_id}")
+    public void deletePictureInfo(Integer pt_id) throws Exception;
 
 }
