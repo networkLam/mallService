@@ -75,7 +75,6 @@ public class UserController {
             return new Result("404", "fail", "下单失败，无法购买。");
         }
         return new Result("1", "success", "已成功下单。");
-
     }
 
     @RequestMapping("/api/userinfo")

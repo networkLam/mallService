@@ -59,12 +59,9 @@ public class OrderController {
             }
 //            写入操作日志
             System.out.println(actions);
-            if(!(order.getState() == null && order.getExp_id() == null)){
-                manageLogMapper.insertMangeLog(tokenUserInfo.getId(),order_number,actions,t);
+            if (!(order.getState() == null && order.getExp_id() == null)) {
+                manageLogMapper.insertMangeLog(tokenUserInfo.getId(), order_number, actions, t);
             }
-
-
-
         } catch (Exception e) {
             return Result.error("更新失败");
         }
@@ -90,17 +87,24 @@ public class OrderController {
 
     //根据订单状态查询订单数据
     @RequestMapping("/api/order")
-    public Result orderList(String status,Integer offset){
-       // System.out.println(status+"and"+offset);
-        if(status.equals("wait") || status.equals("sign") || status.equals("refund")){
+    public Result orderList(String status, Integer offset) {
+        // System.out.println(status+"and"+offset);
+        if (status.equals("wait") || status.equals("sign") || status.equals("refund") || status.equals("finish")) {
             List<Order> orders = orderMapper.orderList(status, offset);
             return Result.success(orders);
-        }else {
+        } else {
             return Result.error("关键字出错");
-
         }
+    }
 
-
+    @RequestMapping("/api/order/count")
+    public Result orderCount(String status){
+        if (status.equals("wait") || status.equals("sign") || status.equals("refund") || status.equals("finish")) {
+            int count = orderMapper.orderCount(status);
+            return Result.success(count);
+        } else {
+            return Result.error("关键字出错");
+        }
     }
 
 }

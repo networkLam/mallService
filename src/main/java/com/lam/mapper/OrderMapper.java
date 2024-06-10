@@ -43,4 +43,7 @@ public interface OrderMapper {
 
     @Select("select order_id, money, amount, time, state, exp_id, order_number, uid, add_id, address, phone, contacts from orders where state=#{status} limit 10 offset #{offset}")
     public List<Order> orderList(String status, Integer offset);
+
+    @Select("select count(*) from orders where state=#{status}")
+    public int orderCount(String status);
 }
