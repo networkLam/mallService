@@ -6,6 +6,7 @@ import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.HandleMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class ProductController {
     //    自动连线的
     @Autowired
@@ -112,29 +114,31 @@ public class ProductController {
         }
 
     }
+
     @GetMapping("/api/search")
-    public Result searchProduct(String name){
-        System.out.println("用户在搜索"+name);
+    public Result searchProduct(String name) {
+        System.out.println("用户在搜索" + name);
         return Result.success("test interface ,please don't use in the productive environment");
     }
 
     //上传详情页的图片数据
     @PostMapping("/api/uploads/detail")
-    public Result uploadPictures(@RequestBody Pictures pictures){
-        try{
-            productService.detailProductInsert(pictures.getPictures(),pictures.getPd_id());
+    public Result uploadPictures(@RequestBody Pictures pictures) {
+        try {
+            productService.detailProductInsert(pictures.getPictures(), pictures.getPd_id());
             return Result.success("详情图片写入成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error("详情图片写入失败");
         }
     }
+
     //获取详情页的图片数据
     @RequestMapping("/api/picture/detail")
-    public Result requestPictureDetail(Integer pd_id){
-        try{
+    public Result requestPictureDetail(Integer pd_id) {
+        try {
             List<PictureDetail> pictureDetails = productMapper.queryPicture(pd_id);
             return Result.success(pictureDetails);
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error("no relativity data");
         }
 
@@ -143,12 +147,23 @@ public class ProductController {
 
     //删除详情页图片的接口 get请求
     @RequestMapping("/api/delete/picture")
-    public Result deletePicture(Integer pt_id){
+    public Result deletePicture(Integer pt_id) {
         try {
             productMapper.deletePictureInfo(pt_id);
             return Result.success("删除成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error("删除失败");
         }
     }
+    //该接口新增，接口文档中不存在
+    @RequestMapping("/api/product/info")
+    public Result queryProduct(Integer pdId) {
+        try {
+            Product product = productMapper.queryProductInfo(pdId);
+            return Result.success(product);
+        } catch (Exception e) {
+            return Result.error("查询商品信息错误，请确保商品的ID正确");
+        }
+    }
+
 }

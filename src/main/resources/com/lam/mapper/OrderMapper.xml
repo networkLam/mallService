@@ -8,6 +8,9 @@
         <set>
             <if test="state != null">state = #{state},</if>
             <if test="exp_id != null">exp_id = #{exp_id},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="contacts != null">contacts = #{contacts},</if>
         </set>
         where order_id = #{order_id};
     </update>

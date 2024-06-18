@@ -8,6 +8,7 @@ import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 public class ManageLogController {
     @Autowired
     private ManageLogMapper manageLogMapper;
-    @GetMapping("/api/Mange/show")
+    @GetMapping("/api/log/product")
     public Result getManageMsg(Integer start){
         if(start == null){
             return Result.error("缺少必要的参数");
@@ -33,7 +34,11 @@ public class ManageLogController {
         }else {
             return Result.success(msg);
         }
-
-
+    }
+    //返回訂單 log 的总行数
+    @RequestMapping("/api/log/order/count")
+    public Result count(){
+        int count = manageLogMapper.count();
+        return Result.success(count);
     }
 }

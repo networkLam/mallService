@@ -8,10 +8,11 @@ import java.util.List;
 
 @Mapper
 public interface CartMapper {
+    //添加到购物车
     @Insert("insert into cart(amount, pd_id, uid,join_time) VALUES(#{amount},#{pd_id},#{uid},#{join_time})")
     public void addCart(Integer amount, Integer pd_id, Integer uid, LocalDateTime join_time) throws Exception;
-
-    @Select("select id, amount, pd_id from cart where uid = #{uid}")
+//查询用户的购物车中有哪些商品
+    @Select("select id, amount, pd_id,join_time from cart where uid = #{uid}")
     public List<Cart> querySelfCart(Integer uid);
 
 //    删除某样商品

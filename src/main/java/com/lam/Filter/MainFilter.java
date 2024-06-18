@@ -31,8 +31,8 @@ public class MainFilter implements Filter {
         //2.determine request is as include login word?
         log.info("请求的url是:{}", requestURI);
         //放行登录 注册 浏览图片 upload是暫時放行的
-        if (requestURI.contains("login") || requestURI.contains("register")|| requestURI.contains("image") || requestURI.contains("upload")) {
-            log.info("登录操作或注册操作，放行...");
+        if (requestURI.contains("login") || requestURI.contains("register")|| requestURI.contains("image") || requestURI.contains("upload") || requestURI.contains("/product/page")) {
+            log.info("操作放行...");
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }

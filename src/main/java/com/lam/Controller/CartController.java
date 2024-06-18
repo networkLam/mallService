@@ -5,6 +5,7 @@ import com.lam.mapper.CartMapper;
 import com.lam.pojo.Cart;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class CartController {
     @Autowired
     private CartMapper cartMapper;
@@ -34,16 +36,20 @@ public class CartController {
         * */
 //        如果商品不存在购物车中则添加（如果存在则添加数量
         try {
-//            如果商品存在那么就增加其数量
+//            如果商品存在那么就增加其数量 (如果数据中没有该条记录那么返回的就是空值)
             Cart exist = cartMapper.isExist(cart.getPd_id(), cart.getUid());
-            if(exist.getAmount() > 0){
+
+            if(exist != null){
+                System.out.println("---");
                 int amount = exist.getAmount() + 1;
                 cartMapper.increaseAmount(amount,cart.getUid(), cart.getPd_id());
             }else{
+                System.out.println("+++");
                 cartMapper.addCart(1,cart.getPd_id(), tokenUserInfo.getId(), t);
             }
             return Result.success("添加购物车成功！");
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Result.error("添加购物车失败！");
         }
 
@@ -76,7 +82,7 @@ public class CartController {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         try {
             Cart exist = cartMapper.isExist(cart.getPd_id(), tokenUserInfo.getId());
-            if(exist.getAmount() > 0){
+            if(exist != null){
                 cartMapper.modifyAmount(cart.getAmount(),tokenUserInfo.getId(), cart.getPd_id());
             }else{
 //                走到这个分支就证明从当前的uid和pd_id查不出东西
@@ -87,5 +93,4 @@ public class CartController {
             return Result.error("修改失败");
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package com.lam.Service;
 
+import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.AddressMapper;
 import com.lam.mapper.OrderMapper;
 import com.lam.mapper.ProductMapper;
@@ -40,15 +41,18 @@ public class UserService {
     }
 //用户下单商品的业务逻辑
     public boolean submitOrder(UserSubmitMultiple userSubmitMultiple) throws Exception {
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         LocalDateTime t = LocalDateTime.now();//获取当前时间
         Random random = new Random();
         order.setState("待发货"); //设置订单状态
         order.setExp_id(String.valueOf( random.nextInt(10))+String.valueOf(System.currentTimeMillis()).substring(0,11));//设置快递编号
         order.setTime(t);//设置下单时间
         //订单id
-        order.setOrder_number(userSubmitMultiple.getId()+String.valueOf(System.currentTimeMillis()));//设置订单编号
+//        order.setOrder_number(userSubmitMultiple.getId()+String.valueOf(System.currentTimeMillis()));//设置订单编号
+        order.setOrder_number(tokenUserInfo.getId()+String.valueOf(System.currentTimeMillis()));//设置订单编号
         //正确的返回值应该是1
-        int count = addressMapper.queryExist(userSubmitMultiple.getAdd_id(),userSubmitMultiple.getId());
+//        int count = addressMapper.queryExist(userSubmitMultiple.getAdd_id(),userSubmitMultiple.getId());
+        int count = addressMapper.queryExist(userSubmitMultiple.getAdd_id(),tokenUserInfo.getId());
         System.out.println("count = "+count);
         if (count < 1 || userSubmitMultiple.getAdd_id() == null){
 //            告诉用户没有地址 or this address not  belong to you .
@@ -60,14 +64,15 @@ public class UserService {
         int addId =  userSubmitMultiple.getAdd_id();
         //查询该id返回查询到的地址信息
         Address address = addressMapper.queryAddId(addId);
-
         System.out.println(address);
         int total_g = 0; //订单商品的总个数
         double total_money = 0;//订单的总钱数
         //拿到用户ID
-        int userId = userSubmitMultiple.getId();
-        order.setUid(userId);
-        System.out.println("用户id是:"+userId);
+//        int userId = userSubmitMultiple.getId();
+//        order.setUid(userId);
+
+        order.setUid(tokenUserInfo.getId());
+        System.out.println("用户id是:"+tokenUserInfo.getId());
         List<UserSubmitMultiple.Product_Info> productList = userSubmitMultiple.getProductList();
         userMapper.submit(order);//执行这个SQL语句后返回ID保存在order对象中
         int orderId = order.getOrder_id(); //获取订单返回的ID

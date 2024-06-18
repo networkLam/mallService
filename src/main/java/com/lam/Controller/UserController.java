@@ -1,6 +1,7 @@
 package com.lam.Controller;
 
 import com.lam.Service.UserService;
+import com.lam.Utils.CheckPower;
 import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.UserMapper;
@@ -83,6 +84,50 @@ public class UserController {
         Integer id = tokenUserInfo.getId();
         return Result.success(userMapper.returnUserInfo(id));
     }
+//新增的
+//    返回用户总量
+    @RequestMapping("/api/user/total")
+    public Result userTotal(){
+        int total = userMapper.userTotal();
+        return Result.success(total);
+    }
+    //新增的
+    //分页返回用户的信息
+    @RequestMapping("/api/user/info")
+    public Result userDivideBrowser(Integer start){
+        List<User> users = userMapper.divideBrowser(start);
+        return Result.success(users);
+    }
 
+    //更新用户名
+    @PostMapping("/api/user/update/name")
+    public Result updateUserName(@RequestBody User user){
+        try{
+            userMapper.updateUserName(user.getUID(),user.getUser_name());
+            System.out.println(user);
+            return Result.success("更新成功");
+        }catch (Exception e){
+            return Result.error("更新失败");
+        }
+    }
+
+    @RequestMapping("/api/user/rest/pwd")
+    public Result restPWD(Integer uid){
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {//判断当前访问的是否为管理员
+            return Result.error("无权限访问");
+        }
+         userMapper.restUserPWD(uid);
+        return Result.success("重置密码成功");
+    }
+    @RequestMapping("/api/user/hide")
+    public Result hideUser(Integer uid){
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {//判断当前访问的是否为管理员
+            return Result.error("无权限访问");
+        }
+        userMapper.deleteUser(uid);
+        return Result.success("用户删除成功");
+    }
 
 }

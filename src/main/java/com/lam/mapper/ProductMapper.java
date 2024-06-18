@@ -44,5 +44,9 @@ public interface ProductMapper {
     //删除详情页的图片信息
     @Delete("delete from picture where pt_id = #{pt_id}")
     public void deletePictureInfo(Integer pt_id) throws Exception;
+    //查询商品的信息 根据商品id
+    @Select("select * from product where pd_id = #{pdId}")
+    public Product queryProductInfo(Integer pdId) throws Exception;
+
 
 }

@@ -5,8 +5,10 @@ import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.ManageLogMapper;
 import com.lam.mapper.OrderMapper;
 import com.lam.pojo.Order;
+import com.lam.pojo.OrderDetails;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 public class OrderController {
     @Autowired
@@ -66,7 +69,6 @@ public class OrderController {
             return Result.error("更新失败");
         }
         return Result.success("更新完成");
-
     }
 
     //分页浏览
@@ -84,7 +86,7 @@ public class OrderController {
             return Result.error("分页失败");
         }
     }
-
+    //新增的接口文档中还不存在
     //根据订单状态查询订单数据
     @RequestMapping("/api/order")
     public Result orderList(String status, Integer offset) {
@@ -97,8 +99,10 @@ public class OrderController {
         }
     }
 
+    //新增的接口文档中还不存在
+    //查看不同状态的订单条数
     @RequestMapping("/api/order/count")
-    public Result orderCount(String status){
+    public Result orderCount(String status) {
         if (status.equals("wait") || status.equals("sign") || status.equals("refund") || status.equals("finish")) {
             int count = orderMapper.orderCount(status);
             return Result.success(count);
@@ -106,5 +110,26 @@ public class OrderController {
             return Result.error("关键字出错");
         }
     }
+
+    //新增的接口文档中还不存在
+    @RequestMapping("/api/order/detail")
+    public Result orderDetail(Integer orderID) {
+        try {
+            List<OrderDetails> orderDetail = orderMapper.findOrderDetail(orderID);
+            return Result.success(orderDetail);
+        } catch (Exception e) {
+            log.info("出错了，可能是订单不存在");
+            return Result.error("出错了，可能是订单不存在");
+        }
+
+    }
+
+//    根据订单的id返回订单编号（接口文档中不存在该接口
+    @RequestMapping("/api/order/info")
+    public Result orderInfo(Integer id){
+        String s = orderMapper.searchId(id);
+        return Result.success(s);
+    }
+
 
 }

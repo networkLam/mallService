@@ -64,7 +64,14 @@ public class ManagerController {
         //获取线程中的id
         Integer id = tokenUserInfo.getId();
         Manager info = manageMapper.getInfo(id);
+        return Result.success(info);
+    }
 
+//    获取管理员个人信息
+    @RequestMapping("/api/administrator/action")
+    public Result getAdminInfo(Integer id){
+
+        Manager info = manageMapper.getInfo(id);
         return Result.success(info);
     }
 }

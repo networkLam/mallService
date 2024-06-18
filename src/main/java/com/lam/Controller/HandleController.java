@@ -8,6 +8,7 @@ import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,6 +35,11 @@ public class HandleController {
             return Result.success(handles);
         }
 
+    }
+    @RequestMapping("/api/handle/count")
+    public Result getCount(){
+        int count = handleMapper.count();
+        return Result.success(count);
     }
 
 }

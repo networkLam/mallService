@@ -23,20 +23,34 @@ public class CollectionController {
     public Result addCollection(Integer id) {
         LocalDateTime t = LocalDateTime.now();
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
-
-
         try {
             Collection exist = collectionMapper.isExist(tokenUserInfo.getId(), id);  //判断商品是否已经被收藏
             System.out.println(exist);
             if (exist != null) {
-                return Result.success("该商品已被收藏");
+                return Result.success("已收藏");
             }
             collectionMapper.addCollection(tokenUserInfo.getId(), id, t);
             return Result.success("收藏成功");
         } catch (Exception e) {
             return Result.error("收藏失败");
         }
-
+    }
+    @RequestMapping("/api/collection/query/single")
+    public Result queryCollectionSingle(Integer id){
+        LocalDateTime t = LocalDateTime.now();
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        try {
+            Collection exist = collectionMapper.isExist(tokenUserInfo.getId(), id);  //判断商品是否已经被收藏
+            if (exist != null) {
+                //存在返回
+                return Result.success("exist");
+            }else{
+                //不存在返回
+                return Result.success("absent");
+            }
+        }catch (Exception e){
+            return Result.error("查询失败");
+        }
     }
 
     //    移除收藏

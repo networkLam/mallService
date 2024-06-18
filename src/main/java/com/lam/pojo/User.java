@@ -17,4 +17,5 @@ public class User {
     private String user_pwd;
     private String gender;
     private LocalDateTime register_time;
+    private int display; //是否显示
 }

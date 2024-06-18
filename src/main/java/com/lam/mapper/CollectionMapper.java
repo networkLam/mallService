@@ -21,7 +21,7 @@ public interface CollectionMapper {
     //删除收藏
     @Delete("delete from collection where uid = #{uid} and pd_id = #{pd_id}")
     public void removeCollection(Integer uid,Integer pd_id) throws Exception;
-    //查询商品是否已经在购物车
+    //查询商品是否已经收藏
     @Select("select * from collection where uid=#{uid} and pd_id=#{pd_id}")
     public Collection isExist(Integer uid,Integer pd_id) throws Exception;//判断是否已经在收藏列表
 }

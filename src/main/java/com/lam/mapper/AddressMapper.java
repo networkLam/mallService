@@ -1,10 +1,9 @@
 package com.lam.mapper;
 
 import com.lam.pojo.Address;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface AddressMapper {
@@ -20,6 +19,12 @@ public interface AddressMapper {
     public void addAddress(Address address) throws Exception;
 
 //    用户删除一个地址
-    @Delete("delete from address_info  where addId=#{id}")
-    public void deleteAddress(Integer id)throws Exception;
+    @Update("update address_info set display = 0 where addId=#{addId} and uid = #{uid}")
+    public void deleteAddress(Integer addId,Integer uid) throws Exception;
+    //用户浏览地址
+    @Select("select * from address_info where uid=#{uid} and display = 1 order by addId desc")
+    public List<Address> browser(Integer uid);
+    //更新用户地址信息
+    @Update("update address_info set address = #{address} ,phone = #{phone} , contacts = #{contacts} where addid = #{addId} and uid =#{uid}")
+    public void updateAddress(Address address) throws Exception;
 }
