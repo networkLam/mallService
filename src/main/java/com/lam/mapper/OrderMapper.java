@@ -51,6 +51,6 @@ public interface OrderMapper {
     public List<OrderDetails> findOrderDetail(Integer order_id) throws Exception;
 
     //用户获取订单 暂时不分页
-    @Select("select * from orders where uid = #{uid} and state = #{state}")
+    @Select("select * from orders where uid = #{uid} and state = #{state} order by order_id desc")
     public List<Order> queryOrderState(Integer uid,String state);
 }
