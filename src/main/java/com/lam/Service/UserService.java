@@ -1,10 +1,7 @@
 package com.lam.Service;
 
 import com.lam.Utils.UserTheadLocal;
-import com.lam.mapper.AddressMapper;
-import com.lam.mapper.OrderMapper;
-import com.lam.mapper.ProductMapper;
-import com.lam.mapper.UserMapper;
+import com.lam.mapper.*;
 import com.lam.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +24,8 @@ public class UserService {
     private OrderDetails orderDetails; //订单详情对象
     @Autowired
     private AddressMapper addressMapper;
-
+    @Autowired
+    private CartMapper cartMapper;
     public int register(String phone, String pwd) throws Exception {
         User user = new User();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -41,10 +39,12 @@ public class UserService {
     }
 //用户下单商品的业务逻辑
     public boolean submitOrder(UserSubmitMultiple userSubmitMultiple) throws Exception {
+        System.out.println("gate is "+userSubmitMultiple.getGate());
+
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         LocalDateTime t = LocalDateTime.now();//获取当前时间
         Random random = new Random();
-        order.setState("待发货"); //设置订单状态
+        order.setState("wait"); //设置订单状态
         order.setExp_id(String.valueOf( random.nextInt(10))+String.valueOf(System.currentTimeMillis()).substring(0,11));//设置快递编号
         order.setTime(t);//设置下单时间
         //订单id
@@ -57,7 +57,6 @@ public class UserService {
         if (count < 1 || userSubmitMultiple.getAdd_id() == null){
 //            告诉用户没有地址 or this address not  belong to you .
             System.out.println("告诉用户没有拥有此地址 or this address not  belong to you .");
-
             return false;
         }
         order.setAdd_id(userSubmitMultiple.getAdd_id());//设置用户地址
@@ -72,7 +71,7 @@ public class UserService {
 //        order.setUid(userId);
 
         order.setUid(tokenUserInfo.getId());
-        System.out.println("用户id是:"+tokenUserInfo.getId());
+//        System.out.println("用户id是:"+tokenUserInfo.getId());
         List<UserSubmitMultiple.Product_Info> productList = userSubmitMultiple.getProductList();
         userMapper.submit(order);//执行这个SQL语句后返回ID保存在order对象中
         int orderId = order.getOrder_id(); //获取订单返回的ID
@@ -100,7 +99,14 @@ public class UserService {
         order.setPhone(address.getPhone());//设置收货号码
         order.setAddress(address.getAddress());//设置收货地址
         order.setContacts(address.getContacts());//设置收货联系人
-
+        //等于1表示从购物车中提交的
+        if(userSubmitMultiple.getGate()!=null && userSubmitMultiple.getGate() == 1){
+            System.out.println("把表单中提交过来的商品删除");
+            userSubmitMultiple.getProductList().forEach((item)->{
+                //从购物车中移除商品 当从购物车中购买商品时
+                cartMapper.removeProduct(item.getPd_id(),tokenUserInfo.getId());
+            });
+        }
         //写入订单
         System.out.println(order);
         orderMapper.insertOrder(order); //最后更新刚刚创建的row

@@ -29,4 +29,8 @@ public interface CartMapper {
     //修改购物车某样商品的数量
     @Update("update cart set amount = #{amount} where uid=#{uid} and pd_id = #{pd_id}")
     public void modifyAmount(Integer amount,Integer uid,Integer pd_id) throws Exception;
+
+    //根据商品id从购物车中删除
+    @Delete("delete from cart where pd_id = #{pd_id} and uid = #{uid}")
+    public void removeProduct(Integer pd_id,Integer uid);
 }

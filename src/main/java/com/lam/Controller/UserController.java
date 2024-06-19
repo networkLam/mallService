@@ -118,7 +118,7 @@ public class UserController {
             return Result.error("无权限访问");
         }
          userMapper.restUserPWD(uid);
-        return Result.success("重置密码成功");
+        return Result.success("重置密码成功") ;
     }
     @RequestMapping("/api/user/hide")
     public Result hideUser(Integer uid){
@@ -129,5 +129,7 @@ public class UserController {
         userMapper.deleteUser(uid);
         return Result.success("用户删除成功");
     }
+    //用户浏览自己的订单
+    //每次从购物车下完订单后就把购物车中选中的数据删掉
 
 }

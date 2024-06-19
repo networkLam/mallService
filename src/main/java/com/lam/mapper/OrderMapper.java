@@ -49,4 +49,8 @@ public interface OrderMapper {
     //根据订单去查订单的详细购买数据
     @Select("select * from order_details where order_id = #{order_id}")
     public List<OrderDetails> findOrderDetail(Integer order_id) throws Exception;
+
+    //用户获取订单 暂时不分页
+    @Select("select * from orders where uid = #{uid} and state = #{state}")
+    public List<Order> queryOrderState(Integer uid,String state);
 }

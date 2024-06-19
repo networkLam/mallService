@@ -4,15 +4,14 @@ import com.lam.Utils.CheckPower;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.ManageLogMapper;
 import com.lam.mapper.OrderMapper;
-import com.lam.pojo.Order;
-import com.lam.pojo.OrderDetails;
-import com.lam.pojo.Result;
-import com.lam.pojo.TokenUserInfo;
+import com.lam.mapper.ProductMapper;
+import com.lam.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +22,8 @@ public class OrderController {
     private OrderMapper orderMapper;
     @Autowired
     private ManageLogMapper manageLogMapper; //操作日志
+    @Autowired
+    private ProductMapper productMapper;
 
     //查询订单(管理员)
     @GetMapping("/api/order/query")
@@ -86,6 +87,7 @@ public class OrderController {
             return Result.error("分页失败");
         }
     }
+
     //新增的接口文档中还不存在
     //根据订单状态查询订单数据
     @RequestMapping("/api/order")
@@ -121,14 +123,43 @@ public class OrderController {
             log.info("出错了，可能是订单不存在");
             return Result.error("出错了，可能是订单不存在");
         }
-
     }
 
-//    根据订单的id返回订单编号（接口文档中不存在该接口
+    //    根据订单的id返回订单编号（接口文档中不存在该接口
     @RequestMapping("/api/order/info")
-    public Result orderInfo(Integer id){
+    public Result orderInfo(Integer id) {
         String s = orderMapper.searchId(id);
         return Result.success(s);
+    }
+
+    //用户浏览订单
+    @RequestMapping("/api/order/user/browser")
+    public Result userBrowserOrder(String state) {
+//        UserBrowserOrder userBrowserOrder = new UserBrowserOrder();
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        List<Order> orders = orderMapper.queryOrderState(tokenUserInfo.getId(), state);
+        //还需要包含一个首页的图
+        for (int i = 0; i < orders.size(); i++){
+            try {
+                //获取该用户下所有的订单数据
+                List<OrderDetails> orderDetail = orderMapper.findOrderDetail(orders.get(i).getOrder_id());
+                //从订单数据中遍历，找到每个pd_id的产品信息
+                List<Product> products = new ArrayList<>();
+                orderDetail.forEach((k) -> {
+                    try {
+                        Product product = productMapper.queryProductInfo(k.getPd_id());
+                        product.setNumber_single(k.getNumber());
+                        products.add(product);
+                    }catch (Exception e){
+                        log.info("错误");
+                    }
+                });
+                orders.get(i).setProducts(products);
+            } catch (Exception e) {
+                log.info("错误");
+            }
+        }
+        return Result.success(orders);
     }
 
 

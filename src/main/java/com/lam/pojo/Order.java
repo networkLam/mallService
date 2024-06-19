@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @RestController
 @Data
 @AllArgsConstructor
@@ -23,4 +25,5 @@ public class Order {
     private String phone; //手机号码
     private String contacts;//联系人
     private String order_number;//订单编号
+    private List<Product> products; //商品信息，仅在用户浏览订单时使用
 }
