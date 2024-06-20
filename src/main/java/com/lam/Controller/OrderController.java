@@ -161,5 +161,27 @@ public class OrderController {
         }
         return Result.success(orders);
     }
+    //用户确认收货
+    @RequestMapping("/api/order/user/confirm")
+    public Result userConfirmOrderController(Integer id){
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        try {
+            orderMapper.userConfirmOrder(id,tokenUserInfo.getId());
+        }catch (Exception e){
+            return Result.error("确认收货失败");
+        }
+        return Result.success("确认收货成功");
+    }
+    //用户退货退款
+    @RequestMapping("/api/order/user/refund")
+    public Result userRefundOrderController(Integer id){
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        try {
+            orderMapper.userRefundOrder(id,tokenUserInfo.getId());
+        }catch (Exception e){
+            return Result.error("退回失败");
+        }
+        return Result.success("退回成功");
+    }
 
 }

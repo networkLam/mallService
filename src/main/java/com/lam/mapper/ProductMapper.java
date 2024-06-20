@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -48,5 +47,8 @@ public interface ProductMapper {
     @Select("select * from product where pd_id = #{pdId}")
     public Product queryProductInfo(Integer pdId) throws Exception;
 
+    //暂不分页 搜索
+    @Select("select * from product where p_describe like concat('%',#{keyword},'%') limit 10 offset 0 ")
+    public List<Product> searchProduct(String keyword);
 
 }

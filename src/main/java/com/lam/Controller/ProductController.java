@@ -165,5 +165,11 @@ public class ProductController {
             return Result.error("查询商品信息错误，请确保商品的ID正确");
         }
     }
+    //用户搜索商品
+    @RequestMapping("/api/product/search")
+    public Result searchProductController(String keyword){
+        List<Product> products = productMapper.searchProduct(keyword);
+        return Result.success(products);
+    }
 
 }
