@@ -2,10 +2,7 @@ package com.lam.mapper;
 
 import com.lam.pojo.PictureDetail;
 import com.lam.pojo.Product;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,10 +14,10 @@ public interface ProductMapper {
     public List<Product> allProduct();
 
     //    计算一共有多少个商品
-    @Select("select count(*) from product")
+    @Select("select count(*) from product where display = 1")
     public int count();
 //分页
-    @Select("select * from product order by pd_id desc limit 5 offset #{start}  ")
+    @Select("select * from product where display = 1 order by pd_id desc limit 5 offset #{start}  ")
     public List<Product> dividePage(Integer start);
 
 //    allows information of some update
@@ -50,5 +47,8 @@ public interface ProductMapper {
     //暂不分页 搜索
     @Select("select * from product where p_describe like concat('%',#{keyword},'%') limit 10 offset 0 ")
     public List<Product> searchProduct(String keyword);
+
+    @Update("update product set display = 0 where pd_id = #{pd_id}")
+    public void deleteProduct(Integer pd_id);
 
 }

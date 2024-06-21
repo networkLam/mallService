@@ -172,4 +172,15 @@ public class ProductController {
         return Result.success(products);
     }
 
+    @RequestMapping("/api/product/del")
+    public Result deleteProductController(Integer pd_id){
+        try {
+            productMapper.deleteProduct(pd_id);
+        }catch (Exception e){
+            return Result.error("删除失败");
+        }
+       return Result.success("删除成功");
+
+    }
+
 }

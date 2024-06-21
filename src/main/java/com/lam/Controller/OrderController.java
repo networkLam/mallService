@@ -135,7 +135,6 @@ public class OrderController {
     //用户浏览订单
     @RequestMapping("/api/order/user/browser")
     public Result userBrowserOrder(String state) {
-//        UserBrowserOrder userBrowserOrder = new UserBrowserOrder();
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         List<Order> orders = orderMapper.queryOrderState(tokenUserInfo.getId(), state);
         //还需要包含一个首页的图

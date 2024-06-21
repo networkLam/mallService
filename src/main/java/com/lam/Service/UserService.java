@@ -39,8 +39,7 @@ public class UserService {
     }
 //用户下单商品的业务逻辑
     public boolean submitOrder(UserSubmitMultiple userSubmitMultiple) throws Exception {
-        System.out.println("gate is "+userSubmitMultiple.getGate());
-
+//        System.out.println("gate is "+userSubmitMultiple.getGate());
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         LocalDateTime t = LocalDateTime.now();//获取当前时间
         Random random = new Random();
@@ -48,15 +47,12 @@ public class UserService {
         order.setExp_id(String.valueOf( random.nextInt(10))+String.valueOf(System.currentTimeMillis()).substring(0,11));//设置快递编号
         order.setTime(t);//设置下单时间
         //订单id
-//        order.setOrder_number(userSubmitMultiple.getId()+String.valueOf(System.currentTimeMillis()));//设置订单编号
         order.setOrder_number(tokenUserInfo.getId()+String.valueOf(System.currentTimeMillis()));//设置订单编号
         //正确的返回值应该是1
-//        int count = addressMapper.queryExist(userSubmitMultiple.getAdd_id(),userSubmitMultiple.getId());
         int count = addressMapper.queryExist(userSubmitMultiple.getAdd_id(),tokenUserInfo.getId());
         System.out.println("count = "+count);
         if (count < 1 || userSubmitMultiple.getAdd_id() == null){
-//            告诉用户没有地址 or this address not  belong to you .
-            System.out.println("告诉用户没有拥有此地址 or this address not  belong to you .");
+//            用户没有地址
             return false;
         }
         order.setAdd_id(userSubmitMultiple.getAdd_id());//设置用户地址
@@ -67,9 +63,6 @@ public class UserService {
         int total_g = 0; //订单商品的总个数
         double total_money = 0;//订单的总钱数
         //拿到用户ID
-//        int userId = userSubmitMultiple.getId();
-//        order.setUid(userId);
-
         order.setUid(tokenUserInfo.getId());
 //        System.out.println("用户id是:"+tokenUserInfo.getId());
         List<UserSubmitMultiple.Product_Info> productList = userSubmitMultiple.getProductList();
