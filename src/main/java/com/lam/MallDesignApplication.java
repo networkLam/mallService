@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @ServletComponentScan
 @SpringBootApplication
-@EnableScheduling
+//@EnableScheduling
 public class MallDesignApplication {
 
     public static void main(String[] args) {

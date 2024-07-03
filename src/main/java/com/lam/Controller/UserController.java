@@ -53,7 +53,7 @@ public class UserController {
         } else {
             try {
                 userService.register(userRegister.getPhone(), userRegister.getPwd());
-                return new Result("0", "success", "注册成功");
+                return new Result("1", "success", "注册成功");
             }catch (Exception e) {
                 return Result.error("注册失败，系统中已存在此账号。");
             }

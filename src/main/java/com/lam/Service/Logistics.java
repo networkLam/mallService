@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Logistics {
-
-    @Scheduled(fixedRate = 150000)
+//多线程
+//    @Scheduled(fixedRate = 150000)
     public void print(){
         System.out.println("printing");
 

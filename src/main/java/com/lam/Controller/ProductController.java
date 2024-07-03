@@ -169,7 +169,9 @@ public class ProductController {
     @RequestMapping("/api/product/search")
     public Result searchProductController(String keyword){
         List<Product> products = productMapper.searchProduct(keyword);
-        return Result.success(products);
+       // int size = products.size();
+        List<Product> match = productService.match(products, keyword);
+        return Result.success(match);
     }
 
     @RequestMapping("/api/product/del")
@@ -180,7 +182,6 @@ public class ProductController {
             return Result.error("删除失败");
         }
        return Result.success("删除成功");
-
     }
 
 }
