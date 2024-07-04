@@ -45,8 +45,12 @@ public class ProductService {
     }
 
     public boolean check(int low, String str, String keyword) {
+        if (str.length() - low < keyword.length()) {
+          //  System.out.println("running ??");
+            return false;
+        }
         for (int i = 0, j = low; i < keyword.length(); i++, j++) {
-            if (str.charAt(j) != keyword.charAt(i)) {
+            if (str.toUpperCase().charAt(j) != keyword.toUpperCase().charAt(i)) {
                 return false;
             }
         }
@@ -58,8 +62,10 @@ public class ProductService {
         for (int i = 0; i < content.size(); i++) {
             for (int j = 0; j < content.get(i).getP_describe().length(); j++) {
                 if (check(j, content.get(i).getP_describe(), keyword)) {
-                    System.out.println(content.get(i).getP_describe());
                     relevance[i] = content.get(i).getP_describe().length() * (j + 1);
+                    System.out.println("content = "+content.get(i).getP_describe() +"j = " + j);
+                    System.out.println("relevance[" + i + "] = "+relevance[i]);
+                    break;
                 }
             }
         }
