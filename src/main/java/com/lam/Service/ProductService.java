@@ -63,8 +63,8 @@ public class ProductService {
             for (int j = 0; j < content.get(i).getP_describe().length(); j++) {
                 if (check(j, content.get(i).getP_describe(), keyword)) {
                     relevance[i] = content.get(i).getP_describe().length() * (j + 1);
-                    System.out.println("content = "+content.get(i).getP_describe() +"j = " + j);
-                    System.out.println("relevance[" + i + "] = "+relevance[i]);
+//                    System.out.println("content = "+content.get(i).getP_describe() +"j = " + j);
+//                    System.out.println("relevance[" + i + "] = "+relevance[i]);
                     break;
                 }
             }
@@ -85,7 +85,7 @@ public class ProductService {
                 }
             }
         }
-        System.out.println(Arrays.toString(relevance));
+//        System.out.println(Arrays.toString(relevance));
         return content;
     }
 }
