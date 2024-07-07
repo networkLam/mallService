@@ -1,6 +1,7 @@
 package com.lam;
 
 import com.lam.Service.ManagerService;
+import com.lam.Service.OrderService;
 import com.lam.Service.ProductService;
 import com.lam.Service.UserService;
 import com.lam.mapper.CollectionMapper;
@@ -15,9 +16,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.DoubleStream;
 
@@ -43,7 +47,8 @@ class MallDesignApplicationTests {
     private Order order;
     @Autowired
     private CollectionMapper collectionMapper;
-    //    private Product
+    @Autowired
+    private OrderService orderService;
     @Test
     public void testAllUserInfo() {
 //        List<User> userList = userMapper.show();
@@ -216,5 +221,20 @@ class MallDesignApplicationTests {
 
         Collection exist = collectionMapper.isExist(1, 60);
         System.out.println(exist);
+    }
+
+    //test if analysis of address is properly
+    @Test
+    public void analysisAddress(){
+//        LocalDate localDate = LocalDate.now();
+//        localDate = localDate.minusDays(7);
+//        LocalDateTime localDateTime = LocalDateTime.now();
+//        LocalDate localDate1 =localDateTime.toLocalDate();
+//        if(localDate.isEqual(localDate1)){
+//            System.out.println("equal");
+//        }else {
+//            System.out.println("not equal");
+//        }
+     orderService.totalSales();
     }
 }

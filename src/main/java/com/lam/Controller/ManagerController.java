@@ -4,6 +4,7 @@ import com.lam.Service.ManagerService;
 import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.ManageMapper;
+import com.lam.mapper.UserMapper;
 import com.lam.pojo.Manager;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class ManagerController {
     private ManagerService managerService;
     @Autowired
     private ManageMapper manageMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     //    该接口ok
     @PostMapping("/api/administrator/register")
@@ -70,8 +74,19 @@ public class ManagerController {
 //    获取管理员个人信息
     @RequestMapping("/api/administrator/action")
     public Result getAdminInfo(Integer id){
-
         Manager info = manageMapper.getInfo(id);
         return Result.success(info);
+    }
+
+    @RequestMapping("/api/administrator/gender")
+    public Result getAmountUserGender(){
+        int amount = userMapper.amount();//总的用户数
+        int men = userMapper.amountGender("男");
+        int female = userMapper.amountGender("女");
+        HashMap<String,Integer> hashMap = new HashMap<>();
+        hashMap.put("amount",amount);
+        hashMap.put("men",men);
+        hashMap.put("female",female);
+        return Result.success(hashMap);
     }
 }

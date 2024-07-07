@@ -1,5 +1,6 @@
 package com.lam.Controller;
 
+import com.lam.Service.OrderService;
 import com.lam.Utils.CheckPower;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.ManageLogMapper;
@@ -24,7 +25,8 @@ public class OrderController {
     private ManageLogMapper manageLogMapper; //操作日志
     @Autowired
     private ProductMapper productMapper;
-
+    @Autowired
+    private OrderService orderService;
     //查询订单(管理员)
     @GetMapping("/api/order/query")
     public Result queryOrder(String number) {
@@ -181,6 +183,16 @@ public class OrderController {
             return Result.error("退回失败");
         }
         return Result.success("退回成功");
+    }
+
+    //访问包裹目的地数据
+    @RequestMapping("/api/order/admin/parcel")
+    public Result getParcelDestination(){
+        return Result.success(orderService.analysisDestination());
+    }
+    @RequestMapping("/api/order/admin/sales")
+    public Result getSales(){
+        return Result.success(orderService.totalSales());
     }
 
 }

@@ -17,9 +17,13 @@ public interface UserMapper {
     @Select("select phone,user_name,gender from user where uid = #{id}")
     public User returnUserInfo(Integer id);
 
+    //统计用户总数
     @Select("select count(*) from user")
     public int amount();
 
+    //按性别统计用户数
+    @Select("select count(*) from user where gender = #{gender} ")
+    public int amountGender(String gender);
     //    删除某个用户 删除是有返回值 返回的值是int 表示影响了几条记录
 //    @Delete("delete  from user where uid=#{id}")
 //    public int deleteUser(String id);
@@ -44,12 +48,13 @@ public interface UserMapper {
     @Select("select count(*) from user where display = 1")
     public int userTotal();
 
-//    分页浏览用户
+    //    分页浏览用户
     @Select("select uid,phone,user_name,gender,register_time from user where display = 1 order by UID desc limit 10 offset #{start}")
     public List<User> divideBrowser(Integer start);
+
     //更新用户名
     @Update("update user set user_name = #{name} where uid=#{uid}")
-    public void updateUserName(Integer uid,String name) throws Exception;
+    public void updateUserName(Integer uid, String name) throws Exception;
 
     //重置用户密码
     @Update("update user set user_pwd = 'abcd1234' where uid = #{uid}")

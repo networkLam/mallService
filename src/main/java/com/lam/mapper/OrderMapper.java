@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -64,4 +65,11 @@ public interface OrderMapper {
     //用户退回订单
     @Update("update orders set state = 'refund' where order_id = #{order_id} and uid=#{uid}")
     public void userRefundOrder(Integer order_id, Integer uid) throws Exception;
+
+    //先暂时性的排除一下HK和UK
+    @Select("select address from orders where address != 'HK' AND address != 'UK' order by order_id desc limit 100 offset 0 ")
+    public List<String> queryLastOneHundredOrders();
+    //返回最近7天的销售额
+    @Select("select * from orders where time > #{localDate}")
+    public List<Order> totalSales(LocalDate localDate);
 }

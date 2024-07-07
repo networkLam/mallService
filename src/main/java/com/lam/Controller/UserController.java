@@ -57,8 +57,6 @@ public class UserController {
             }catch (Exception e) {
                 return Result.error("注册失败，系统中已存在此账号。");
             }
-
-
         }
     }
 //    购买商品
@@ -120,6 +118,7 @@ public class UserController {
          userMapper.restUserPWD(uid);
         return Result.success("重置密码成功") ;
     }
+    //隐藏用户
     @RequestMapping("/api/user/hide")
     public Result hideUser(Integer uid){
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
@@ -129,7 +128,6 @@ public class UserController {
         userMapper.deleteUser(uid);
         return Result.success("用户删除成功");
     }
-    //用户浏览自己的订单
-    //每次从购物车下完订单后就把购物车中选中的数据删掉
+
 
 }
