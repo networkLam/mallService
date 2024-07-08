@@ -64,7 +64,7 @@ public class OrderService {
 
     public int check(LocalDate localDate, List<TotalSales> totalSales) {
         for (int i = 0; i < totalSales.size(); i++) {
-            if (totalSales.get(i).getLocalDate().isEqual(localDate)) { //相同就返回true
+            if (totalSales.get(i).getLocalDate().isEqual(localDate)) { //找到就返回索引位置
                 return i;
             }
         }
@@ -72,7 +72,7 @@ public class OrderService {
     }
 
     public  List<TotalSales>  totalSales(){
-        LocalDate localDate = LocalDate.now().minusDays(17);
+        LocalDate localDate = LocalDate.now().minusDays(7);
         List<Order> order_details = orderMapper.totalSales(localDate);
         List<TotalSales> totalSales_data = new ArrayList<>();
         for (Order orderDetail : order_details) {
