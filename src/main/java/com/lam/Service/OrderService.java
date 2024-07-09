@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 public class OrderService {
@@ -86,7 +86,6 @@ public class OrderService {
                 totalSales_data.add(temp_totalSales);
             }
         }
-        System.out.println(totalSales_data);
         return totalSales_data;
     }
 
