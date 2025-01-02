@@ -12,9 +12,7 @@ import java.util.List;
 public class ProductService {
     @Autowired
     private ProductMapper productMapper;
-    //private int relevance[] = new int[10];
-    private int index = 0;
-
+    //private int relevance[] = new int[10]
     public int determiner(Product product) {
         if (product.getPrice() == null || product.getState() == null || product.getP_describe() == null || product.getPd_type() == null || product.getPicture_name() == null) {
             System.out.println("文本不完整，结束。");
@@ -57,7 +55,9 @@ public class ProductService {
         return true;
     }
 
+//    根据关键字的关系因子排序
     public List<Product> match(List<Product> content, String keyword) {
+//        计算每一个关系因子
         int[] relevance = new int[content.size()];
         for (int i = 0; i < content.size(); i++) {
             for (int j = 0; j < content.get(i).getP_describe().length(); j++) {
@@ -69,10 +69,12 @@ public class ProductService {
                 }
             }
         }
+//        排序
         return sort_list(content, relevance);
     }
 
     public List<Product> sort_list(List<Product> content, int[] relevance) {
+//        升序排序
         for (int i = 0; i < relevance.length; i++) {
             for (int j = i + 1; j < relevance.length; j++) {
                 if (relevance[i] > relevance[j]) {
