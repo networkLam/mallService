@@ -14,6 +14,7 @@ public interface UserMapper {
 //    public List<User> show();
     public List<User> show();
 
+    //根据用户ID查询用户信息
     @Select("select phone,user_name,gender from user where uid = #{id}")
     public User returnUserInfo(Integer id);
 

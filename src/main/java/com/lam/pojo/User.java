@@ -18,4 +18,5 @@ public class User {
     private String gender;
     private LocalDateTime register_time;
     private int display; //是否显示
+    private String role; //角色
 }

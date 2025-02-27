@@ -6,6 +6,7 @@ import com.lam.mapper.ManageLogMapper;
 import com.lam.pojo.Managelog;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import com.lam.responseDTO.OrderLogDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class ManageLogController {
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
             return Result.error("该账号没有权限");
         }
-        List<Managelog> msg = manageLogMapper.getMSG(start);
+        List<OrderLogDTO> msg = manageLogMapper.getMSG(start);
         if (msg.isEmpty()){
             return Result.success("没有日志");
         }else {

@@ -30,6 +30,9 @@ public interface ManageMapper {
     @Select("select * from manager where m_id=#{id}")
     public Manager getInfo(Integer id);
 
+    //查找用户手机
+    @Select("select m_id, phone, m_pwd, name, gender, entry_time, role from manager where phone = #{phone}")
+    public Manager findUserPhone(String phone);
 
 
 }

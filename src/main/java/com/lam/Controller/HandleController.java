@@ -6,6 +6,7 @@ import com.lam.mapper.HandleMapper;
 import com.lam.pojo.Handle;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import com.lam.responseDTO.HandleLogDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class HandleController {
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
             return Result.error("该账号没有权限");
         }
-        List<Handle> handles = handleMapper.allMessage(start);
+        List<HandleLogDTO> handles = handleMapper.allMessage(start);
         if (handles.isEmpty()){
             return Result.success("没有日志");
         }else {

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 //管理人员对象
-@RestController
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +18,5 @@ private String m_pwd;
 private String name;
 private String gender;
 private LocalDateTime entry_time;
+private String role; //角色
 }

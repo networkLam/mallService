@@ -59,6 +59,16 @@ public class ProductController {
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
             return Result.error("该账号没有权限");
         }
+        //TODO
+        //需要再读取一遍数据库，和数据库中的信息对比
+        try {
+            //旧的商品列表信息
+            Product oldProductInfo = productMapper.queryProductInfo(product.getPd_id());
+
+        }catch (Exception e){
+
+        }
+
         //determine what information the admin had updated
         String updateInfo = "";
         if (product.getPrice() != null) {

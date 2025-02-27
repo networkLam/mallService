@@ -1,16 +1,19 @@
 package com.lam.Controller;
 
+import com.alibaba.fastjson.JSON;
 import com.lam.Service.UserService;
 import com.lam.Utils.CheckPower;
 import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.UserMapper;
 import com.lam.pojo.*;
+import com.lam.websocket.SocketMessageService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +25,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SocketMessageService socketMessageService;
     //    用户登录接口
     @RequestMapping("/api/login")
     public Result userLogin(@RequestBody User user) {
@@ -73,6 +78,8 @@ public class UserController {
 //            System.out.println(e.fillInStackTrace());
             return new Result("404", "fail", "下单失败，无法购买。");
         }
+        String str = JSON.toJSONString(new Message(true, "update", "200"));
+        socketMessageService.sendToAllUser(str);//发送消息给所有的在线管理员
         return new Result("1", "success", "已成功下单。");
     }
 
@@ -128,6 +135,36 @@ public class UserController {
         userMapper.deleteUser(uid);
         return Result.success("用户删除成功");
     }
+    @GetMapping("/api/getip")
+    public Result returnIP(HttpServletRequest request){
+        System.out.println(request.getRemoteAddr());
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
 
-
+        // 如果有多个代理，取第一个非unknown的IP地址
+        if (ipAddress != null && ipAddress.contains(",")) {
+            String[] addresses = ipAddress.split(",");
+            for (String ip : addresses) {
+                if (!"unknown".equalsIgnoreCase(ip.trim())) {
+                    ipAddress = ip.trim();
+                    break;
+                }
+            }
+        }
+        return Result.success(ipAddress);
+    }
 }

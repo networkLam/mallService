@@ -25,7 +25,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.DoubleStream;
 
-@SpringBootTest
+//@SpringBootTest
 class MallDesignApplicationTests {
     @Autowired
     private UserMapper userMapper;
@@ -49,6 +49,7 @@ class MallDesignApplicationTests {
     private CollectionMapper collectionMapper;
     @Autowired
     private OrderService orderService;
+
     @Test
     public void testAllUserInfo() {
 //        List<User> userList = userMapper.show();
@@ -133,7 +134,7 @@ class MallDesignApplicationTests {
             List<Manager> login = manageMapper.login("10086", "167");
             System.out.println(login.isEmpty());
             System.out.println(login);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
 
         }
@@ -204,6 +205,7 @@ class MallDesignApplicationTests {
                 .compact();
         System.out.println(token);
     }
+
     @Test
     public void jwtDecode() {
         Claims lam13 = Jwts.parser()
@@ -211,8 +213,8 @@ class MallDesignApplicationTests {
                 .parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJwd2QiOiIxMjEzOCIsImV4cCI6MTcxNjI1ODg0NiwidXNlcm5hbWUiOiJsYW0ifQ.v5sY7TZxcq3JLmSV75h7qihCHCxoSkhgGCO48KTw5Cs")
                 .getBody();
         System.out.println(lam13);
-        System.out.println(lam13.get("pwd",String.class));//通过claims.get方法取出来
-        String username = lam13.get("username",String.class);
+        System.out.println(lam13.get("pwd", String.class));//通过claims.get方法取出来
+        String username = lam13.get("username", String.class);
         System.out.println(username);
     }
 
@@ -225,7 +227,7 @@ class MallDesignApplicationTests {
 
     //test if analysis of address is properly
     @Test
-    public void analysisAddress(){
+    public void analysisAddress() {
 //        LocalDate localDate = LocalDate.now();
 //        localDate = localDate.minusDays(7);
 //        LocalDateTime localDateTime = LocalDateTime.now();
@@ -235,6 +237,54 @@ class MallDesignApplicationTests {
 //        }else {
 //            System.out.println("not equal");
 //        }
-     orderService.totalSales();
+        orderService.totalSales();
+    }
+
+    @Test
+    public void KMPNext() {
+        System.out.println("KMP计算Next数组");
+        //计算kmp算法中的next数组
+        String str1 = "aaaab";
+        int[] compare = compare(str1);
+        System.out.println("next=" + Arrays.toString(compare));
+    }
+
+    //比较
+    public int[] compare(String pattern) {
+        int[] next = new int[pattern.length()];
+        int j = 0;
+        int t = next[0] = -1;
+
+        while (j < pattern.length() - 1) {
+            if (t < 0 || pattern.charAt(j) == pattern.charAt(t)) {
+                j++;
+                t++;
+                // 更加直观的更新规则
+                next[j] = pattern.charAt(j) != pattern.charAt(t) ? t : next[t];
+            } else {
+                t = next[t];
+            }
+        }
+        return next;
+    }
+
+    @Test
+    public void compareStr() {
+        String str1 = "aaaab";
+        String str2 = "aaaab";
+        int i = str1.length()-1;
+        int j = str2.length() -1;
+        int count = 0;
+        while(j>=0){
+            if(str1.charAt(i)==str2.charAt(j)){
+                i--;
+                count ++;
+            }else{
+                System.out.println("last match index is " + count);
+                count = 0;
+            }
+            j--;
+        }
+        System.out.println("ultimate has "+count+" match char");
     }
 }

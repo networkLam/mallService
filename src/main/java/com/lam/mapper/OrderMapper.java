@@ -35,7 +35,7 @@ public interface OrderMapper {
     public Order queryOrder(String order_number) throws Exception;
 
     //分页浏览订单
-    @Select("select order_id, money, amount, time, state, exp_id, order_number, uid, add_id, address, phone, contacts from orders limit 15 offset #{start};")
+    @Select("select order_id, money, amount, time, state, exp_id, order_number, uid, add_id, address, phone, contacts from orders order by order_id desc limit 15 offset #{start};")
     public List<Order> orderBrowse(Integer start) throws Exception;
 
     //根据订单ID搜出订单号order_number
@@ -43,7 +43,7 @@ public interface OrderMapper {
     public String searchId(Integer order_id);
 
     //每次返回10条指定状态的订单数据
-    @Select("select order_id, money, amount, time, state, exp_id, order_number, uid, add_id, address, phone, contacts from orders where state=#{status} limit 10 offset #{offset}")
+    @Select("select order_id, money, amount, time, state, exp_id, order_number, uid, add_id, address, phone, contacts from orders where state=#{status} order by order_id desc limit 10 offset #{offset}")
     public List<Order> orderList(String status, Integer offset);
 
     //查看不同状态的订单有多少条
