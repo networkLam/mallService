@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private Integer UID;
+    private Integer id;
     private String phone;
     private String user_name;
     private String user_pwd;
     private String gender;
-    private LocalDateTime register_time;
+    private LocalDateTime register_time; //注册时间
     private int display; //是否显示
-    private String role; //角色
+    private String roles; //角色
 }

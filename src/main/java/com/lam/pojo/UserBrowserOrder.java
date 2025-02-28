@@ -3,7 +3,6 @@ package com.lam.pojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -13,7 +12,6 @@ import java.util.List;
 *
 *
 * */
-@RestController
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 //上传多张图片的对象
-@RestController
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

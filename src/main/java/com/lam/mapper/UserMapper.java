@@ -15,7 +15,7 @@ public interface UserMapper {
     public List<User> show();
 
     //根据用户ID查询用户信息
-    @Select("select phone,user_name,gender from user where uid = #{id}")
+    @Select("select phone,user_name,gender from user where id = #{id}")
     public User returnUserInfo(Integer id);
 
     //统计用户总数
@@ -33,8 +33,8 @@ public interface UserMapper {
     public int userRegister(User user) throws Exception;
 
     //    查询用户身份是否存在
-    @Select("select UID,phone,user_name,user_pwd from user where phone = #{phone} and user_pwd = #{user_pwd} ")
-    public List<User> login(String phone, String user_pwd);
+    @Select("select ID,phone,user_name,roles,gender,register_time from user where phone = #{phone} and user_pwd = #{user_pwd} ")
+    public User login(String phone, String user_pwd);
 
     //    用于用户提交订单
     @Insert("insert into orders(time) values (#{time})")
@@ -50,12 +50,12 @@ public interface UserMapper {
     public int userTotal();
 
     //    分页浏览用户
-    @Select("select uid,phone,user_name,gender,register_time from user where display = 1 order by UID desc limit 10 offset #{start}")
+    @Select("select id,phone,user_name,gender,register_time from user where display = 1 order by id desc limit 10 offset #{start}")
     public List<User> divideBrowser(Integer start);
 
     //更新用户名
-    @Update("update user set user_name = #{name} where uid=#{uid}")
-    public void updateUserName(Integer uid, String name) throws Exception;
+    @Update("update user set user_name = #{name} where id=#{id}")
+    public void updateUserName(Integer id, String name) throws Exception;
 
     //重置用户密码
     @Update("update user set user_pwd = 'abcd1234' where uid = #{uid}")

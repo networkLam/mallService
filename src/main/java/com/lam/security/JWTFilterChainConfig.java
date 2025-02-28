@@ -1,7 +1,7 @@
 package com.lam.security;
 
 import com.alibaba.fastjson.JSONObject;
-import com.lam.Service.AAUserDetailService;
+import com.lam.Service.UserDetailServiceImp;
 import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.pojo.Result;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,10 +30,9 @@ import java.util.Date;
 @Slf4j
 public class JWTFilterChainConfig extends OncePerRequestFilter {
 
-//    private final JWTUserDetailService jwtUserDetailService;
 
     @Autowired
-    private AAUserDetailService aaUserDetailService;
+    private UserDetailServiceImp userDetailServiceImp;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -73,25 +71,25 @@ public class JWTFilterChainConfig extends OncePerRequestFilter {
         try {
             Claims userInfo = JwtUtil.jwtParser(token);
             // 打印过期时间和当前时间进行对比
-            Date expirationTime = userInfo.getExpiration();
-            System.out.println("Token 过期时间: " + expirationTime);
-            System.out.println("当前时间: " + new Date());
+//            Date expirationTime = userInfo.getExpiration();
+//            System.out.println("Token 过期时间: " + expirationTime);
+//            System.out.println("当前时间: " + new Date());
 
-            String name = userInfo.get("name", String.class);
-            String phone = userInfo.get("phone", String.class);
+//            String name = userInfo.get("name", String.class);
+//            String phone = userInfo.get("phone", String.class);
             Integer id = userInfo.get("id", Integer.class);
-            String authorization = userInfo.get("authorization", String.class);
+//            String authorization = userInfo.get("authorization", String.class);
             TokenUserInfo tokenUserInfo = new TokenUserInfo();
-            tokenUserInfo.setName(name);//设置姓名
-            tokenUserInfo.setPhone(phone);//手机号
+//            tokenUserInfo.setName(name);//设置姓名
+//            tokenUserInfo.setPhone(phone);//手机号
             tokenUserInfo.setId(id);//id
-            tokenUserInfo.setAuthorization(authorization);//表明身份的字段
+//            tokenUserInfo.setAuthorization(authorization);//表明身份的字段
             UserTheadLocal.set(tokenUserInfo);//往线程里面塞数据
-            httpSession.setAttribute("user", name);
+            httpSession.setAttribute("user", id); //将用户ID作为唯一值
             /*
              *将数据设置到内存中
              * */
-            UserDetails userDetails = aaUserDetailService.loadUserByUsername(phone); //
+            UserDetails userDetails = userDetailServiceImp.loadUserByUsername(id.toString()); //查找用户ID，根据用户ID返回相关信息
             System.out.println("用户信息如下");
             System.out.println(userDetails);
             UsernamePasswordAuthenticationToken authentication =

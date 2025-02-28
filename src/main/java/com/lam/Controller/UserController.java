@@ -7,6 +7,7 @@ import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.UserMapper;
 import com.lam.pojo.*;
+import com.lam.responseDTO.UserLoginDTO;
 import com.lam.websocket.SocketMessageService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class UserController {
@@ -27,26 +30,28 @@ public class UserController {
 
     @Autowired
     private SocketMessageService socketMessageService;
-    //    用户登录接口
+    //   管理员和用户登录接口
     @RequestMapping("/api/login")
     public Result userLogin(@RequestBody User user) {
         System.out.println("phone:" + user.getPhone() + "pwd:" + user.getUser_pwd());
-        List<User> login = userMapper.login(user.getPhone(), user.getUser_pwd());
-        System.out.println(login);
-        if (login.isEmpty()) {
-            return new Result("0", "登录失败", "账号或密码有误，请检查。");
+       User systemUser = userMapper.login(user.getPhone(), user.getUser_pwd());
+        System.out.println(systemUser);
+        if (Objects.isNull(systemUser)) {
+            return new Result("0", "登录失败,账号或密码有误，请检查。", "账号或密码有误，请检查。");
         }
-        String userName = login.get(0).getUser_name();
-        String userPhone = login.get(0).getPhone();
-        Integer Uid = login.get(0).getUID();
+//        String userName = login.get(0).getUser_name();
+//        String userPhone = login.get(0).getPhone();
+//        Integer Uid = login.get(0).getId();//获取用户ID
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put("name", userName);//用户名
-        claims.put("phone", userPhone);//手机号
-        claims.put("id", Uid);
-        claims.put("authorization","user");//表面用户
-        System.out.println("用户id是：" + login.get(0).getUID());
+        //token中不要放敏感信息
+//        claims.put("name", userName);//用户名
+//        claims.put("phone", userPhone);//手机号
+        claims.put("id", systemUser.getId()); //用户ID
+        claims.put("expired",new Date().getTime()+JwtUtil.TIME); //过期时间
+//        System.out.println("用户id是：" + login.get(0).getId());
         String token = JwtUtil.jwtBuilder(claims);//下发token
-        return new Result("1", "登录成功", token);
+//        new UserLoginDTO(user,token);
+        return new Result("1", "登录成功",  new UserLoginDTO(systemUser,token));
     }
 
     //    该接口可用
@@ -108,7 +113,7 @@ public class UserController {
     @PostMapping("/api/user/update/name")
     public Result updateUserName(@RequestBody User user){
         try{
-            userMapper.updateUserName(user.getUID(),user.getUser_name());
+            userMapper.updateUserName(user.getId(),user.getUser_name());
             System.out.println(user);
             return Result.success("更新成功");
         }catch (Exception e){

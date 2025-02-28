@@ -6,6 +6,7 @@ import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.HandleMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
+import com.lam.responseDTO.ProductDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -50,21 +51,23 @@ public class ProductController {
     }
 
     //update product information
-    @PostMapping("/api/product/update")
+    @PostMapping("/api/admin/product/update")
     public Result productUpdate(@RequestBody Product product) {
         System.out.println(product);
         LocalDateTime t = LocalDateTime.now();
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
 //        判断该账号是否归属管理员
-        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
-            return Result.error("该账号没有权限");
-        }
+//        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
+//            return Result.error("该账号没有权限");
+//        }
         //TODO
         //需要再读取一遍数据库，和数据库中的信息对比
         try {
             //旧的商品列表信息
             Product oldProductInfo = productMapper.queryProductInfo(product.getPd_id());
+            if(!oldProductInfo.getPrice().equals(product.getPrice())){
 
+            }
         }catch (Exception e){
 
         }
@@ -165,12 +168,15 @@ public class ProductController {
             return Result.error("删除失败");
         }
     }
-    //该接口新增，接口文档中不存在
+    //返回商品信息
+    //TODO:REMARK DATE 2025年3月1日00:05:55  wechat miniPrograming incomplete
     @RequestMapping("/api/product/info")
     public Result queryProduct(Integer pdId) {
         try {
             Product product = productMapper.queryProductInfo(pdId);
-            return Result.success(product);
+            List<PictureDetail> pictureDetails = productMapper.queryPicture(pdId);
+            ProductDTO productDTO = new ProductDTO(product,pictureDetails);
+            return Result.success(productDTO);
         } catch (Exception e) {
             return Result.error("查询商品信息错误，请确保商品的ID正确");
         }
@@ -184,7 +190,7 @@ public class ProductController {
         return Result.success(match);
     }
 
-    @RequestMapping("/api/product/del")
+    @RequestMapping("/api/admin/product/del")
     public Result deleteProductController(Integer pd_id){
         try {
             productMapper.deleteProduct(pd_id);
