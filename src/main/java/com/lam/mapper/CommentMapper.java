@@ -1,6 +1,7 @@
 package com.lam.mapper;
 
 import com.lam.pojo.ProductComment;
+import com.lam.pojo.ProductCommentFile;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -21,4 +22,11 @@ public interface CommentMapper {
 
     @Select("SELECT comment FROM order_details WHERE order_id = #{order_id} and pd_id = #{pd_id}")
     public String determineHasBeen(Integer order_id,Integer pd_id);
+
+    //read product-reviews according to pdId,5 items each time
+    @Select("select * from product_comment where pd_id = #{pdId} order by time desc  limit 5 offset #{offset}")
+    public List<ProductComment> readProductReviews(Integer pdId,Integer offset); //offset 起始页
+    //用评论的ID去找图
+    @Select("select * from pc_file where pc_id = #{pvId}")
+    public List<ProductCommentFile> readProductReviewsFile(Integer pvId);
 }

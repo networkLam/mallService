@@ -4,7 +4,7 @@ import com.lam.pojo.TokenUserInfo;
 
 public class UserTheadLocal {
     //储存用户信息
-    private static ThreadLocal<TokenUserInfo> userThread = new ThreadLocal<>();
+    private static final ThreadLocal<TokenUserInfo> userThread = new ThreadLocal<>();
 //    设置用户信息
     public static void set(TokenUserInfo tokenUserInfo){
         userThread.set(tokenUserInfo);

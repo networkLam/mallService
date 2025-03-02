@@ -85,7 +85,7 @@ public class JWTFilterChainConfig extends OncePerRequestFilter {
             tokenUserInfo.setId(id);//id
 //            tokenUserInfo.setAuthorization(authorization);//表明身份的字段
             UserTheadLocal.set(tokenUserInfo);//往线程里面塞数据
-            httpSession.setAttribute("user", id); //将用户ID作为唯一值
+            httpSession.setAttribute("user", id.toString()); //将用户ID作为唯一值
             /*
              *将数据设置到内存中
              * */

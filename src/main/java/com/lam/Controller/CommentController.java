@@ -22,4 +22,10 @@ public class CommentController {
         log.info("receive data is {}",commentDTO);
         return commentService.addComment(commentDTO);
     }
+
+    //读取商品的评论
+    @PostMapping("/api/readComment")
+    public Result readComment(Integer pdId,Integer offset){
+        return commentService.readComment(pdId,offset);
+    }
 }

@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProductCommentFile {
     private Integer id; //主键
     private Integer pc_id; //评论的主键ID
-    private Integer file_name; //评论的图片名称
+    private String file_name; //评论的图片名称
 }

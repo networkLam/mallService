@@ -44,9 +44,9 @@ public class ProductController {
     @RequestMapping("/api/product/page/{start}")
     public Result productDividePage(@PathVariable Integer start) {
         List<Product> products = productMapper.dividePage(start);
-        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
-        System.out.println("获取到了数据");
-        System.out.println(tokenUserInfo);
+//        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+//        System.out.println("获取到了数据");
+//        System.out.println(tokenUserInfo);
         return new Result("1", "success", products);
     }
 
