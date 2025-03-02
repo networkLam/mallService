@@ -74,9 +74,9 @@ public class UserController {
     public Result orderProcess(@RequestBody UserSubmitMultiple userSubmitMultiple) {
         System.out.println(userSubmitMultiple);
         try {
-            boolean t = userService.submitOrder(userSubmitMultiple);
-            if (!t) {
-                return new Result("0", "fail", "数据引用有误，下单失败，无法购买。");
+            Result result = userService.submitOrder(userSubmitMultiple);
+            if(!result.getMsg().equals("success")){
+                return result;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

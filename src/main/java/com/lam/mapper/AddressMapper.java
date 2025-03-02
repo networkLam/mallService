@@ -11,7 +11,7 @@ public interface AddressMapper {
     @Select("select count(*) from address_info where addId=#{add_id} and uid = #{uid} ")
     public int queryExist(Integer add_id,Integer uid);
 //查询某个地址ID返回的地址信息
-    @Select("select * from address_info where addId = #{addId}")
+    @Select("select * from address_info where addId = #{addId} and display = 1")
    public Address queryAddId(Integer addId);
 
 //  用户添加一个地址

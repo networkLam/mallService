@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -78,6 +79,9 @@ public class AddressController {
     @GetMapping("/api/address/query")
     public Result queryAddress(Integer addId){
         Address address = addressMapper.queryAddId(addId);
+        if(Objects.isNull(address)){
+            return Result.error("地址不存在");
+        }
         return Result.success(address);
     }
 

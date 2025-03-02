@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -37,8 +38,8 @@ public class UserService {
 
         return userMapper.userRegister(user);
     }
-//用户下单商品的业务逻辑
-    public boolean submitOrder(UserSubmitMultiple userSubmitMultiple) throws Exception {
+//用户下单商品的业务逻辑 don't only return boolean ,because don't know why is failed
+    public Result submitOrder(UserSubmitMultiple userSubmitMultiple) throws Exception {
 //        System.out.println("gate is "+userSubmitMultiple.getGate());
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         LocalDateTime t = LocalDateTime.now();//获取当前时间
@@ -53,12 +54,15 @@ public class UserService {
         System.out.println("count = "+count);
         if (count < 1 || userSubmitMultiple.getAdd_id() == null){
 //            用户没有地址
-            return false;
+            return Result.error("用户没有地址");
         }
         order.setAdd_id(userSubmitMultiple.getAdd_id());//设置用户地址
         int addId =  userSubmitMultiple.getAdd_id();
         //查询该id返回查询到的地址信息
         Address address = addressMapper.queryAddId(addId);
+        if(Objects.isNull(address)){
+            return Result.error("该地址不存在,请选择");
+        }
         System.out.println(address);
         int total_g = 0; //订单商品的总个数
         double total_money = 0;//订单的总钱数
@@ -103,7 +107,7 @@ public class UserService {
         //写入订单
         System.out.println(order);
         orderMapper.insertOrder(order); //最后更新刚刚创建的row
-        return true;
+        return Result.success("下单成功");
     }
 
 }

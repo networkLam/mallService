@@ -149,6 +149,7 @@ public class OrderController {
                     try {
                         Product product = productMapper.queryProductInfo(k.getPd_id());
                         product.setNumber_single(k.getNumber());
+                        product.setComment(k.getComment());
                         products.add(product);
                     }catch (Exception e){
                         log.info("错误");

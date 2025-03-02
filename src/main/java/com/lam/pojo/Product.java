@@ -21,4 +21,5 @@ public class Product {
     private String pd_type;//产品的类型
     private LocalDateTime time;//修改or添加的时间
     private Integer number_single;//仅在浏览商品时使用 该变量表明在某张订单中用户某个商品的数量是多少
+    private String comment; //是否已被评价
 }

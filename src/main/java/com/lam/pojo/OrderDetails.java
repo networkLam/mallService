@@ -15,4 +15,5 @@ public class OrderDetails {
     private Integer pd_id;
     private Integer number;
     private String totals;
+    private String comment; //在当前用户看来该商品是否已经评价
 }

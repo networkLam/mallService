@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // 确保禁用CSRF保护，如果不需要的话
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests//配置无需权限访问的白名单
-                                .requestMatchers("/public/**", "/api/login", "/api/user/register", "/image/**", "/upload/**", "/api/product/page/**", "/ws/**", "/api/administrator/login").permitAll()
+                                .requestMatchers("/upload/**","/public/**", "/api/login", "/api/user/register", "/image/**", "/api/upload/**", "/api/product/page/**", "/ws/**", "/api/administrator/login").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("admin") //所有带admin前缀的都需要有admin角色
                                 .anyRequest().authenticated()
                 )
