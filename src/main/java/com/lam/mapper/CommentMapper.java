@@ -24,9 +24,14 @@ public interface CommentMapper {
     public String determineHasBeen(Integer order_id,Integer pd_id);
 
     //read product-reviews according to pdId,5 items each time
-    @Select("select * from product_comment where pd_id = #{pdId} order by time desc  limit 5 offset #{offset}")
-    public List<ProductComment> readProductReviews(Integer pdId,Integer offset); //offset 起始页
+    @Select("select * from product_comment where pd_id = #{pdId} order by time desc  limit #{limit} offset #{offset}")
+    public List<ProductComment> readProductReviews(Integer pdId,Integer limit,Integer offset); //offset 起始页
     //用评论的ID去找图
     @Select("select * from pc_file where pc_id = #{pvId}")
     public List<ProductCommentFile> readProductReviewsFile(Integer pvId);
+
+    //altogether specific product how much the reviews
+    @Select("select count(*) from product_comment where pd_id = #{pdId}")
+    public int countReviews(Integer pdId);
+
 }

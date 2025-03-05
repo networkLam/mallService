@@ -14,4 +14,6 @@ import java.util.List;
 public class ProductDTO {
     private Product product;
     private List<PictureDetail> pictureList;
+    private Integer count; //商品评论条数
+    private List<CommentViewDTO> commentInfo;//评论的内容
 }

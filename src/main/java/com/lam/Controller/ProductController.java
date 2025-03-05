@@ -3,9 +3,12 @@ package com.lam.Controller;
 import com.lam.Service.ProductService;
 import com.lam.Utils.CheckPower;
 import com.lam.Utils.UserTheadLocal;
+import com.lam.mapper.CommentMapper;
 import com.lam.mapper.HandleMapper;
+import com.lam.mapper.ManageMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
+import com.lam.responseDTO.CommentViewDTO;
 import com.lam.responseDTO.ProductDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +31,10 @@ public class ProductController {
     @Autowired
     private HandleMapper handleMapper;
 
+    @Autowired
+    private CommentMapper commentMapper;
+    @Autowired
+    private ManageMapper manageMapper;
     @RequestMapping("/api/product")
     public Result listProduct() {//查询所有商品
         List<Product> products = productMapper.allProduct();
@@ -175,7 +183,24 @@ public class ProductController {
         try {
             Product product = productMapper.queryProductInfo(pdId);
             List<PictureDetail> pictureDetails = productMapper.queryPicture(pdId);
-            ProductDTO productDTO = new ProductDTO(product,pictureDetails);
+            int count = commentMapper.countReviews(pdId);
+            //read the latest reviews of product
+            List<ProductComment> productComments = commentMapper.readProductReviews(pdId, 2, 0);
+            List<CommentViewDTO> commentViewDTOList = new ArrayList<>();
+            if(!productComments.isEmpty()){
+                productComments.forEach(item->{
+                    CommentViewDTO commentViewDTO = new CommentViewDTO();
+                    User userInfo = manageMapper.findUserId(String.valueOf(item.getUser_id()));
+                    commentViewDTO.setGender(userInfo.getGender());
+                    commentViewDTO.setComment(item.getComment());
+                    commentViewDTO.setUserName(userInfo.getUser_name());
+                    commentViewDTO.setPublishDate(item.getTime().toLocalDate());
+                    commentViewDTOList.add(commentViewDTO);
+                });
+            }
+
+            ProductDTO productDTO = new ProductDTO(product,pictureDetails,count,commentViewDTOList);
+            //add product-reviews and count
             return Result.success(productDTO);
         } catch (Exception e) {
             return Result.error("查询商品信息错误，请确保商品的ID正确");

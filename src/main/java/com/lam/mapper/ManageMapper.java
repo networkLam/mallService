@@ -5,6 +5,7 @@ import com.lam.pojo.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -37,5 +38,10 @@ public interface ManageMapper {
     @Select("select id,user_name, phone, user_pwd, gender, register_time, roles from user where id = #{id}")
     public User findUserId(String id);
 
+    //用户修改名称
+    @Update("update user set user_name = #{name} where phone = #{phone}")
+    public void updateName(String name,String phone);
 
+    @Update("update user set gender = #{gender} where phone = #{phone}")
+    public void updateGender(String gender,String phone);
 }

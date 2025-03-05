@@ -70,7 +70,7 @@ public class CommentService {
             }
             List<CommentViewDTO> commentViewDTOList = new ArrayList<>();
             //find product reviews
-            List<ProductComment> productComments = commentMapper.readProductReviews(pdId, offset);
+            List<ProductComment> productComments = commentMapper.readProductReviews(pdId,5, offset);
             if (productComments.isEmpty()) {
                 return Result.error("暂无评论");
             }

@@ -5,15 +5,17 @@ import com.lam.Service.UserService;
 import com.lam.Utils.CheckPower;
 import com.lam.Utils.JwtUtil;
 import com.lam.Utils.UserTheadLocal;
+import com.lam.mapper.ManageMapper;
 import com.lam.mapper.UserMapper;
 import com.lam.pojo.*;
 import com.lam.responseDTO.UserLoginDTO;
 import com.lam.websocket.SocketMessageService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -21,20 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 public class UserController {
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ManageMapper manageMapper;
 
     @Autowired
     private SocketMessageService socketMessageService;
+
     //   管理员和用户登录接口
     @RequestMapping("/api/login")
     public Result userLogin(@RequestBody User user) {
         System.out.println("phone:" + user.getPhone() + "pwd:" + user.getUser_pwd());
-       User systemUser = userMapper.login(user.getPhone(), user.getUser_pwd());
+        User systemUser = userMapper.login(user.getPhone(), user.getUser_pwd());
         System.out.println(systemUser);
         if (Objects.isNull(systemUser)) {
             return new Result("0", "登录失败,账号或密码有误，请检查。", "账号或密码有误，请检查。");
@@ -47,11 +53,11 @@ public class UserController {
 //        claims.put("name", userName);//用户名
 //        claims.put("phone", userPhone);//手机号
         claims.put("id", systemUser.getId()); //用户ID
-        claims.put("expired",new Date().getTime()+JwtUtil.TIME); //过期时间
+        claims.put("expired", new Date().getTime() + JwtUtil.TIME); //过期时间
 //        System.out.println("用户id是：" + login.get(0).getId());
         String token = JwtUtil.jwtBuilder(claims);//下发token
 //        new UserLoginDTO(user,token);
-        return new Result("1", "登录成功",  new UserLoginDTO(systemUser,token));
+        return new Result("1", "登录成功", new UserLoginDTO(systemUser, token));
     }
 
     //    该接口可用
@@ -64,18 +70,19 @@ public class UserController {
             try {
                 userService.register(userRegister.getPhone(), userRegister.getPwd());
                 return new Result("1", "success", "注册成功");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 return Result.error("注册失败，系统中已存在此账号。");
             }
         }
     }
-//    购买商品
+
+    //    购买商品
     @PostMapping("/api/user/buy")
     public Result orderProcess(@RequestBody UserSubmitMultiple userSubmitMultiple) {
         System.out.println(userSubmitMultiple);
         try {
             Result result = userService.submitOrder(userSubmitMultiple);
-            if(!result.getMsg().equals("success")){
+            if (!result.getMsg().equals("success")) {
                 return result;
             }
         } catch (Exception e) {
@@ -89,50 +96,53 @@ public class UserController {
     }
 
     @RequestMapping("/api/userinfo")
-    public Result getUserInfo(){
+    public Result getUserInfo() {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         Integer id = tokenUserInfo.getId();
         return Result.success(userMapper.returnUserInfo(id));
     }
-//新增的
+
+    //新增的
 //    返回用户总量
     @RequestMapping("/api/user/total")
-    public Result userTotal(){
+    public Result userTotal() {
         int total = userMapper.userTotal();
         return Result.success(total);
     }
+
     //新增的
     //分页返回用户的信息
     @RequestMapping("/api/user/info")
-    public Result userDivideBrowser(Integer start){
+    public Result userDivideBrowser(Integer start) {
         List<User> users = userMapper.divideBrowser(start);
         return Result.success(users);
     }
 
     //更新用户名
     @PostMapping("/api/user/update/name")
-    public Result updateUserName(@RequestBody User user){
-        try{
-            userMapper.updateUserName(user.getId(),user.getUser_name());
+    public Result updateUserName(@RequestBody User user) {
+        try {
+            userMapper.updateUserName(user.getId(), user.getUser_name());
             System.out.println(user);
             return Result.success("更新成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error("更新失败");
         }
     }
 
     @RequestMapping("/api/user/rest/pwd")
-    public Result restPWD(Integer uid){
+    public Result restPWD(Integer uid) {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {//判断当前访问的是否为管理员
             return Result.error("无权限访问");
         }
-         userMapper.restUserPWD(uid);
-        return Result.success("重置密码成功") ;
+        userMapper.restUserPWD(uid);
+        return Result.success("重置密码成功");
     }
+
     //隐藏用户
     @RequestMapping("/api/user/hide")
-    public Result hideUser(Integer uid){
+    public Result hideUser(Integer uid) {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         if (!CheckPower.check(tokenUserInfo.getAuthorization())) {//判断当前访问的是否为管理员
             return Result.error("无权限访问");
@@ -140,8 +150,37 @@ public class UserController {
         userMapper.deleteUser(uid);
         return Result.success("用户删除成功");
     }
+
+    //update username ,with user self operate
+    @PostMapping("/api/user/updateName")
+    public Result updateTheUserNameAccordingUserSelf(@NonNull String userName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User)authentication.getPrincipal();
+        log.info("参数为:{},对象为:{}", userName, user);
+        try{
+            manageMapper.updateName(userName, user.getUsername());
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("更新用户名失败");
+        }
+        return Result.success("更新用户名成功");
+    }
+    @PostMapping("/api/user/updateGender")
+    public Result updateTheUserGender(@NonNull String gender){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User)authentication.getPrincipal();
+        log.info("参数为:{},对象为:{}", gender, user);
+        try {
+            manageMapper.updateGender(gender,user.getUsername());
+            return Result.success("更新性别成功");
+        }catch(Exception e){
+            e.printStackTrace();
+            return Result.success("更新性别失败");
+        }
+    }
+
     @GetMapping("/api/getip")
-    public Result returnIP(HttpServletRequest request){
+    public Result returnIP(HttpServletRequest request) {
         System.out.println(request.getRemoteAddr());
         String ipAddress = request.getHeader("X-Forwarded-For");
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {

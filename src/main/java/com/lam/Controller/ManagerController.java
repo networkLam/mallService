@@ -43,28 +43,28 @@ public class ManagerController {
     }
 
     // 该接口ok
-    @PostMapping("/api/administrator/login")
-    public Result login(@RequestBody Manager manager, HttpSession httpSession) {
-        System.out.println(manager);
-        try {
-            List<Manager> login = manageMapper.login(manager.getPhone(), manager.getM_pwd());
-            if (login.isEmpty()) {
-//            account not exist
-                return new Result("0", "failed", "账号或密码有误，请检查！");
-            }
-//            UserDetails userDetails = User.withUsername("").password("").build();
-            HashMap<String, Object> claims = new HashMap<>();
-            claims.put("name", login.get(0).getName());
-            claims.put("phone", login.get(0).getPhone());
-            claims.put("id", login.get(0).getM_id());
-            claims.put("authorization", "admin");//管理员的权限是标识是admin
-            httpSession.setAttribute("user",login.get(0).getName());
-            return new Result("1", "success", JwtUtil.jwtBuilder(claims));
-        } catch (Exception e) {
-
-            return Result.error("系统出错");
-        }
-    }
+//    @PostMapping("/api/administrator/login")
+//    public Result login(@RequestBody Manager manager, HttpSession httpSession) {
+//        System.out.println(manager);
+//        try {
+//            List<Manager> login = manageMapper.login(manager.getPhone(), manager.getM_pwd());
+//            if (login.isEmpty()) {
+////            account not exist
+//                return new Result("0", "failed", "账号或密码有误，请检查！");
+//            }
+////            UserDetails userDetails = User.withUsername("").password("").build();
+//            HashMap<String, Object> claims = new HashMap<>();
+//            claims.put("name", login.get(0).getName());
+//            claims.put("phone", login.get(0).getPhone());
+//            claims.put("id", login.get(0).getM_id());
+//            claims.put("authorization", "admin");//管理员的权限是标识是admin
+//            httpSession.setAttribute("user",login.get(0).getName());
+//            return new Result("1", "success", JwtUtil.jwtBuilder(claims));
+//        } catch (Exception e) {
+//
+//            return Result.error("系统出错");
+//        }
+//    }
 
     //get manage information
     @RequestMapping("/api/administrator/info")
