@@ -1,5 +1,6 @@
 package com.lam.Controller;
 
+import com.lam.RequestDTO.AddProductDTO;
 import com.lam.Service.ProductService;
 import com.lam.Utils.CheckPower;
 import com.lam.Utils.UserTheadLocal;
@@ -70,15 +71,15 @@ public class ProductController {
 //        }
         //TODO
         //需要再读取一遍数据库，和数据库中的信息对比
-        try {
-            //旧的商品列表信息
-            Product oldProductInfo = productMapper.queryProductInfo(product.getPd_id());
-            if(!oldProductInfo.getPrice().equals(product.getPrice())){
-
-            }
-        }catch (Exception e){
-
-        }
+//        try {
+//            //旧的商品列表信息
+//            Product oldProductInfo = productMapper.queryProductInfo(product.getPd_id());
+//            if(!oldProductInfo.getPrice().equals(product.getPrice())){
+//
+//            }
+//        }catch (Exception e){
+//
+//        }
 
         //determine what information the admin had updated
         String updateInfo = "";
@@ -108,13 +109,14 @@ public class ProductController {
     //add product
     @RequestMapping("/api/product/add")
     public Result productAdd(@RequestBody Product product) {
+        //restructure
         //System.out.println("是否能接收file");
         //System.out.println(file);
-        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
-        //        判断该账号是否归属管理员
-        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
-            return Result.error("该账号没有权限");
-        }
+//        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+//        //        判断该账号是否归属管理员
+//        if (!CheckPower.check(tokenUserInfo.getAuthorization())) {
+//            return Result.error("该账号没有权限");
+//        }
         product.setTime(LocalDateTime.now());
         System.out.println(product);
         int determiner = productService.determiner(product);
@@ -122,6 +124,16 @@ public class ProductController {
             return new Result("0", "fail", "信息不完整，无法录入！");
         }
         return new Result("1", "success", "录入成功！");
+    }
+
+    //添加商品
+    @PostMapping("/api/admin/addProduct")
+    public Result addProduct(@RequestBody AddProductDTO addProductDTO){
+        log.info("receiver data = {}",addProductDTO);
+        //set time now
+        addProductDTO.setTime(LocalDateTime.now());
+        //write data
+        return productService.writeProductData(addProductDTO);
     }
 
     //查询产品价格

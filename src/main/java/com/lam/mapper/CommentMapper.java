@@ -2,6 +2,7 @@ package com.lam.mapper;
 
 import com.lam.pojo.ProductComment;
 import com.lam.pojo.ProductCommentFile;
+import com.lam.responseDTO.WaitReviewsDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -33,5 +34,7 @@ public interface CommentMapper {
     //altogether specific product how much the reviews
     @Select("select count(*) from product_comment where pd_id = #{pdId}")
     public int countReviews(Integer pdId);
+
+    public List<WaitReviewsDTO> retrievalWaitReviews(Integer uid);
 
 }

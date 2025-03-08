@@ -1,6 +1,7 @@
 package com.lam.mapper;
 
 import com.lam.pojo.Collection;
+import com.lam.responseDTO.CollectionDTO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -24,4 +25,6 @@ public interface CollectionMapper {
     //查询商品是否已经收藏
     @Select("select * from collection where uid=#{uid} and pd_id=#{pd_id}")
     public Collection isExist(Integer uid,Integer pd_id) throws Exception;//判断是否已经在收藏列表
+    //查找用户收藏
+    public List<CollectionDTO> retrievalCollectionList(Integer uid);
 }

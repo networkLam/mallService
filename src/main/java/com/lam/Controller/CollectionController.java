@@ -5,6 +5,7 @@ import com.lam.mapper.CollectionMapper;
 import com.lam.pojo.Collection;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import com.lam.responseDTO.CollectionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,8 +70,9 @@ public class CollectionController {
     @RequestMapping("/api/collection/query")
     public Result queryCollection(){
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
-        List<Collection> result_query = collectionMapper.query(tokenUserInfo.getId());
-        return Result.success(result_query);
+        List<CollectionDTO> collectionDTOS = collectionMapper.retrievalCollectionList(tokenUserInfo.getId());
+//        List<Collection> result_query = collectionMapper.query(tokenUserInfo.getId());
+        return Result.success(collectionDTOS);
     }
 
 

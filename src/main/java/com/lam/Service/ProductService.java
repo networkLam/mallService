@@ -1,7 +1,9 @@
 package com.lam.Service;
 
+import com.lam.RequestDTO.AddProductDTO;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.Product;
+import com.lam.pojo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,23 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
     //private int relevance[] = new int[10]
+
+    public Result writeProductData(AddProductDTO addProductDTO) {
+        try {
+            //write product table
+            productMapper.writeProductData(addProductDTO);
+            //get primary key (write picture table
+            if (addProductDTO.getPd_id() != null) {
+                productMapper.addLoopPicture(addProductDTO.getPicture_detail(), addProductDTO.getPd_id());
+            }
+            return Result.success("数据写入成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("数据写入失败");
+        }
+    }
+
+
     public int determiner(Product product) {
         if (product.getPrice() == null || product.getState() == null || product.getP_describe() == null || product.getPd_type() == null || product.getPicture_name() == null) {
             System.out.println("文本不完整，结束。");
@@ -44,7 +63,7 @@ public class ProductService {
 
     public boolean check(int low, String str, String keyword) {
         if (str.length() - low < keyword.length()) {
-          //  System.out.println("running ??");
+            //  System.out.println("running ??");
             return false;
         }
         for (int i = 0, j = low; i < keyword.length(); i++, j++) {
@@ -55,7 +74,7 @@ public class ProductService {
         return true;
     }
 
-//    根据关键字的关系因子排序
+    //    根据关键字的关系因子排序
     public List<Product> match(List<Product> content, String keyword) {
 //        计算每一个关系因子
         int[] relevance = new int[content.size()];

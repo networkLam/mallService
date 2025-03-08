@@ -2,12 +2,16 @@ package com.lam.Controller;
 
 import com.lam.Service.OrderService;
 import com.lam.Utils.UserTheadLocal;
+import com.lam.mapper.CommentMapper;
 import com.lam.mapper.ManageLogMapper;
 import com.lam.mapper.OrderMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
+import com.lam.responseDTO.WaitReviewsDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -26,6 +30,8 @@ public class OrderController {
     private ProductMapper productMapper;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private CommentMapper commentMapper;
     //查询订单(管理员)
     @GetMapping("/api/admin/order/query")
     public Result queryOrder(String number) {
@@ -161,6 +167,22 @@ public class OrderController {
             }
         }
         return Result.success(orders);
+    }
+
+    //用户浏览未评价的商品
+    @PostMapping("/api/user/notReviews")
+    public Result noReviewsProductList(){
+        // 1.find which order user has
+        TokenUserInfo tokenUserInfo = UserTheadLocal.get();
+        List<WaitReviewsDTO> waitReviewsDTOS = commentMapper.retrievalWaitReviews(tokenUserInfo.getId());
+        return Result.success(waitReviewsDTOS);
+//        List<Order> orders = orderMapper.queryOrderState(tokenUserInfo.getId(), "finish");
+//        //2.fine order details according to order ID
+//        for (Order order : orders) {
+//            List<OrderDetails> orderDetails = orderMapper.orderDetails(order.getOrder_id());
+//
+//        }
+
     }
     //用户确认收货
     @RequestMapping("/api/order/user/confirm")

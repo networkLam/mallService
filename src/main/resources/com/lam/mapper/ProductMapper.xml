@@ -5,6 +5,15 @@
     <insert id="addProduct" parameterType="com.lam.pojo.Product">
         insert into product(price,state,p_name,p_describe,picture_name,pd_type,time) values (#{price},#{state},#{p_name},#{p_describe},#{picture_name},#{pd_type},#{time});
     </insert>
+    <insert id="writeProductData" parameterType="com.lam.RequestDTO.AddProductDTO" useGeneratedKeys="true" keyColumn="pd_id" keyProperty="pd_id">
+        insert into product(price,state,p_name,p_describe,picture_name,pd_type,time) values (#{price},#{state},#{p_name},#{p_describe},#{picture_name},#{pd_type},#{time});
+    </insert>
+    <insert id="addLoopPicture">
+        insert into picture(pt_path, pd_id) VALUES
+        <foreach collection="fileNames" item="fileName" separator=",">
+            (#{fileName}, #{pd_id})
+        </foreach>
+    </insert>
     <!--    id mapper 中的接口方法 resultType 方法的返回类型-->
     <update id="updateInformation" parameterType="com.lam.pojo.Product">
         update product

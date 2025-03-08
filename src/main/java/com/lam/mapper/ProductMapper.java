@@ -1,5 +1,6 @@
 package com.lam.mapper;
 
+import com.lam.RequestDTO.AddProductDTO;
 import com.lam.pojo.PictureDetail;
 import com.lam.pojo.Product;
 import org.apache.ibatis.annotations.*;
@@ -50,5 +51,7 @@ public interface ProductMapper {
 
     @Update("update product set display = 0 where pd_id = #{pd_id}")
     public void deleteProduct(Integer pd_id);
+     public void writeProductData(AddProductDTO addProductDTO);
 
+     public void addLoopPicture(@Param("fileNames") List<String> pt_paths,@Param("pd_id") Integer pd_id);
 }

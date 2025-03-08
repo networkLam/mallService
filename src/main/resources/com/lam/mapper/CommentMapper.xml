@@ -9,4 +9,24 @@
             (#{pc_id}, #{fileName})
         </foreach>
     </insert>
+    <select id="retrievalWaitReviews" resultType="com.lam.responseDTO.WaitReviewsDTO">
+        select orders.order_id,
+               orders.time,
+               order_details.id,
+               order_details.comment,
+               order_details.totals,
+               order_details.number,
+               product.p_name,
+               product.picture_name,
+               product.p_describe,
+               product.pd_id,
+               IF(order_details.number = 0, NULL, (order_details.totals / order_details.number)) AS unit_price
+        from orders
+                 join order_details on orders.order_id = order_details.order_id
+                 join product on order_details.pd_id = product.pd_id
+        where orders.state = 'finish'
+          and orders.uid = #{uid}
+          and order_details.comment = '0';
+
+    </select>
 </mapper>

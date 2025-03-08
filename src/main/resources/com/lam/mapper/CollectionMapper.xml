@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lam.mapper.CollectionMapper">
+    <select id="retrievalCollectionList" resultType="com.lam.responseDTO.CollectionDTO">
+        select c.id as c_id,c.pd_id,p.price,p.p_name,p_describe,p.state,c.date,p.picture_name
+        from collection c
+                 join product p on p.pd_id = c.pd_id
+        where c.uid = #{uid}
+    </select>
+</mapper>
