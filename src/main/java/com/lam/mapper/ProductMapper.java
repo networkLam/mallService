@@ -54,4 +54,8 @@ public interface ProductMapper {
      public void writeProductData(AddProductDTO addProductDTO);
 
      public void addLoopPicture(@Param("fileNames") List<String> pt_paths,@Param("pd_id") Integer pd_id);
+     //according to category retrieval
+    @Select("select pd_id, price, state, p_name, p_describe, picture_name, pd_type, time, number, updatetime, display, sale from product where pd_type=#{category} order by time desc limit 10 offset #{offset}")
+     public List<Product> retrievalProductCategory(String category,Integer offset);
+
 }

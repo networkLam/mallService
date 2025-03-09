@@ -236,5 +236,9 @@ public class ProductController {
         }
        return Result.success("删除成功");
     }
+    @PostMapping("/api/product/category")
+    public Result accordingToCategory(String category,Integer offset){
+        return productService.accordingToCategory(category,offset);
+    }
 
 }

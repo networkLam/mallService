@@ -109,4 +109,13 @@ public class ProductService {
 //        System.out.println(Arrays.toString(relevance));
         return content;
     }
+
+    public Result accordingToCategory(String category,Integer offset){
+        List<Product> products = productMapper.retrievalProductCategory(category,offset);
+        if(products.isEmpty()){
+            return Result.error("暂无数据");
+        }else{
+            return Result.success(products);
+        }
+    }
 }
