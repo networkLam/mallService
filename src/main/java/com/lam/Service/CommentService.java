@@ -1,23 +1,26 @@
 package com.lam.Service;
 
 import com.lam.RequestDTO.CommentDTO;
+import com.lam.RequestHttp;
 import com.lam.Utils.UserTheadLocal;
 import com.lam.mapper.CommentMapper;
 import com.lam.mapper.ManageMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
 import com.lam.responseDTO.CommentViewDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.header.Header;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+@Slf4j
 @Service
 public class CommentService {
 
@@ -28,6 +31,9 @@ public class CommentService {
     private ProductMapper productMapper;
     @Autowired
     private ManageMapper manageMapper;
+
+    @Autowired
+    private RequestHttp requestHttp;
 
     public Result addComment(CommentDTO commentDTO) {
         //评价内容和星数
@@ -106,5 +112,39 @@ public class CommentService {
             e.printStackTrace();
             return Result.error("访问出现错误");
         }
+    }
+
+    //views product reviews word cloud
+
+    public Result viewsProductWordCloud(Integer pdId){
+        List<ProductComment> productComments = commentMapper.retrievalLatestComment(pdId);
+        if(productComments.isEmpty()){
+            return Result.success("该商品暂时无法查看词云图");
+        }
+        StringBuffer commentPlus = new StringBuffer();
+        productComments.forEach(item->{
+            commentPlus.append(item.getComment());
+        });
+        log.info("latest 100 items comment is = {}",commentPlus);
+        Map<String,Object> data_json = new HashMap<>();
+        data_json.put("text",commentPlus);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String,Object>> request = new HttpEntity<>(data_json,headers);
+        try {
+            String url = "http://localhost:5000/wordCloud";
+            ResponseEntity<String> forEntity = requestHttp.restTemplate().postForEntity(url,request, String.class);
+            String body = forEntity.getBody();
+            log.info("body is = {}",body);
+            return Result.success(body);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error("远程调用失败！");
+        }
+
+
+//        log.info("response is = {}",forEntity);
+
+
     }
 }

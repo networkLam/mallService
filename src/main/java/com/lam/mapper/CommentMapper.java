@@ -37,4 +37,7 @@ public interface CommentMapper {
 
     public List<WaitReviewsDTO> retrievalWaitReviews(Integer uid);
 
+    //view latest 100 items comment
+    @Select("select * from product_comment where pd_id = #{pdId} order by time desc limit 100 offset 0")
+    public List<ProductComment> retrievalLatestComment(Integer pdId);
 }
