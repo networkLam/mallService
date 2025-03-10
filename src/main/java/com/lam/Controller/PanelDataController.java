@@ -13,7 +13,7 @@ public class PanelDataController {
 
     @Autowired
     private PanelDataService panelDataService;
-
+    //获取统计数据
     @PostMapping("/panelData")
     public Result getData() {
         return panelDataService.getData();
