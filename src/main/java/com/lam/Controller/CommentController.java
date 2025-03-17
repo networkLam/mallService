@@ -30,6 +30,11 @@ public class CommentController {
         return commentService.readComment(pdId, offset);
     }
 
+    @PostMapping("/api/admin/retrieveComment")
+    public Result retrieveCommentAdmin(Integer pdId, Integer offset) {
+        return commentService.retrieveProductReviews(pdId, offset);
+    }
+
     @PostMapping("/api/wordCloud")
     public Result viewWordCloud(Integer pdId) {
         return commentService.viewsProductWordCloud(pdId);

@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
 
-    @Insert("insert into product_comment(pd_id, user_id, time, comment) VALUES (#{pd_id},#{user_id},#{time},#{comment})")
+    @Insert("insert into product_comment(pd_id, user_id, time, comment,stars) VALUES (#{pd_id},#{user_id},#{time},#{comment},#{stars})")
     @Options(keyProperty = "id",useGeneratedKeys = true)
     public void addComment(ProductComment productComment);
 
@@ -40,4 +40,9 @@ public interface CommentMapper {
     //view latest 100 items comment
     @Select("select * from product_comment where pd_id = #{pdId} order by time desc limit 100 offset 0")
     public List<ProductComment> retrievalLatestComment(Integer pdId);
+
+    //compute stars of product
+
+    @Select("select  sum(stars)/count(*) from product_comment where pd_id = #{pd_id}")
+    public double computeStarsScore(Integer pd_id);
 }

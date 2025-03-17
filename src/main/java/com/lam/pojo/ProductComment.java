@@ -15,4 +15,5 @@ public class ProductComment {
     private Integer user_id; //用户的id
     private LocalDateTime time; //评论时间
     private String comment; //评论内容
+    private Integer stars; //星数
 }

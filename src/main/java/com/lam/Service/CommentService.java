@@ -7,6 +7,7 @@ import com.lam.mapper.CommentMapper;
 import com.lam.mapper.ManageMapper;
 import com.lam.mapper.ProductMapper;
 import com.lam.pojo.*;
+import com.lam.responseDTO.CommentViewAdminDTO;
 import com.lam.responseDTO.CommentViewDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.header.Header;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -56,6 +58,7 @@ public class CommentService {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         productComment.setUser_id(tokenUserInfo.getId());
         productComment.setPd_id(commentDTO.getPdId());
+        productComment.setStars(commentDTO.getStars());//获取星数
         commentMapper.addComment(productComment);
         //step 2. insert images url
         if (!commentDTO.getImages().isEmpty()) {
@@ -70,21 +73,33 @@ public class CommentService {
     public Result readComment(Integer pdId, Integer offset) {
         //step 1. read product information
         try {
+            List<CommentViewDTO> commentViewDTOList = retrieveComment(pdId, offset);
+            if (commentViewDTOList.isEmpty()) {
+                return Result.error("暂无评论");
+            }
+            return Result.success(commentViewDTOList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("访问出现错误");
+        }
+    }
+
+    public List<CommentViewDTO> retrieveComment(Integer pdId, Integer offset) {
+        List<CommentViewDTO> commentViewDTOList = new ArrayList<>();
+        try {
             Product product = productMapper.queryProductInfo(pdId);
             if (Objects.isNull(product)) {
-                return Result.error("该产品不存在");
+                return commentViewDTOList;
             }
-            List<CommentViewDTO> commentViewDTOList = new ArrayList<>();
             //find product reviews
-            List<ProductComment> productComments = commentMapper.readProductReviews(pdId,5, offset);
+            List<ProductComment> productComments = commentMapper.readProductReviews(pdId, 5, offset);
             if (productComments.isEmpty()) {
-                return Result.error("暂无评论");
+                return commentViewDTOList;
             }
             productComments.forEach(item -> {
                 CommentViewDTO commentViewDTO = new CommentViewDTO();
                 commentViewDTO.setComment(item.getComment());
                 commentViewDTO.setPublishDate(item.getTime().toLocalDate());
-
                 //find reviews picture path
                 List<ProductCommentFile> productCommentFiles = commentMapper.readProductReviewsFile(item.getId());
                 if (!productCommentFiles.isEmpty()) {
@@ -92,11 +107,8 @@ public class CommentService {
                     List<String> imgList = new ArrayList<>();
                     productCommentFiles.forEach(k -> {
                         imgList.add(k.getFile_name());
-//                        commentViewDTO.getImages().add(k.getFile_name());
                     });
                     commentViewDTO.setImages(imgList);
-//                    System.out.println("1123");
-//                    commentViewDTO.setGender();
                 }
                 //find user info
                 User userInfo = manageMapper.findUserId(String.valueOf(item.getUser_id()));
@@ -107,44 +119,62 @@ public class CommentService {
                 }
                 commentViewDTOList.add(commentViewDTO);
             });
-            return Result.success(commentViewDTOList);
+            return commentViewDTOList;
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("访问出现错误");
+            return commentViewDTOList;
+        }
+    }
+
+    //retrieve product-reviews for admin
+    public Result retrieveProductReviews(Integer pdId, Integer offset) {
+        try {
+            List<CommentViewDTO> commentViewDTOList = this.retrieveComment(pdId, offset);
+            if (commentViewDTOList.isEmpty()) {
+                return Result.error("暂无评论");
+            }
+            CommentViewAdminDTO commentViewAdminDTO = new CommentViewAdminDTO();
+            double score = commentMapper.computeStarsScore(pdId);
+            if (!Double.isNaN(score)) {
+                //保留两位小数
+                DecimalFormat df = new DecimalFormat("#.00");
+                String formattedScore = df.format(score);
+                score = Double.parseDouble(formattedScore);
+                commentViewAdminDTO.setStars(score);
+            }
+            commentViewAdminDTO.setCommentList(commentViewDTOList);
+            return Result.success(commentViewAdminDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("获取评论错误");
         }
     }
 
     //views product reviews word cloud
-
-    public Result viewsProductWordCloud(Integer pdId){
+    public Result viewsProductWordCloud(Integer pdId) {
         List<ProductComment> productComments = commentMapper.retrievalLatestComment(pdId);
-        if(productComments.isEmpty()){
+        if (productComments.isEmpty()) {
             return Result.success("该商品暂时无法查看词云图");
         }
         StringBuffer commentPlus = new StringBuffer();
-        productComments.forEach(item->{
+        productComments.forEach(item -> {
             commentPlus.append(item.getComment());
         });
-        log.info("latest 100 items comment is = {}",commentPlus);
-        Map<String,Object> data_json = new HashMap<>();
-        data_json.put("text",commentPlus);
+        log.info("latest 100 items comment is = {}", commentPlus);
+        Map<String, Object> data_json = new HashMap<>();
+        data_json.put("text", commentPlus);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String,Object>> request = new HttpEntity<>(data_json,headers);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(data_json, headers);
         try {
             String url = "http://localhost:5000/wordCloud";
-            ResponseEntity<String> forEntity = requestHttp.restTemplate().postForEntity(url,request, String.class);
+            ResponseEntity<String> forEntity = requestHttp.restTemplate().postForEntity(url, request, String.class);
             String body = forEntity.getBody();
-            log.info("body is = {}",body);
+            log.info("body is = {}", body);
             return Result.success(body);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.error("远程调用失败！");
         }
-
-
-//        log.info("response is = {}",forEntity);
-
-
     }
 }

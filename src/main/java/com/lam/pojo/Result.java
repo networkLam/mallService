@@ -13,11 +13,11 @@ public class Result {
     private String msg;
     private Object data;
 
-    public static Result error(String data){
+    public static  Result error(Object data){
         return new Result("0","fail",data);
     }
 
-    public static Result success(Object data){
+    public static  Result success(Object data){
         return new Result("1","success",data);
     }
 }
