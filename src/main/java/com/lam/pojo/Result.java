@@ -13,11 +13,17 @@ public class Result {
     private String msg;
     private Object data;
 
-    public static  Result error(Object data){
-        return new Result("0","fail",data);
+    public static Result error(Object data) {
+        return new Result("0", "fail", data);
     }
 
-    public static  Result success(Object data){
-        return new Result("1","success",data);
+    public static Result error(String code, String msg, Object data) {
+        return new Result(code, msg, data);
+    }
+
+    ;
+
+    public static Result success(Object data) {
+        return new Result("1", "success", data);
     }
 }

@@ -42,13 +42,11 @@ public class CommentService {
         if (commentDTO.getComment().isEmpty() || commentDTO.getStars() == 0) {
             return Result.error("评价内容不全，请检查");
         }
-
         //determine this order is had be reviews
         String flag = commentMapper.determineHasBeen(commentDTO.getOrderId(), commentDTO.getPdId());
         if (flag.equals("1")) {
             return Result.error("该商品已经评价过");
         }
-
         //step 1.  insert comment
         ProductComment productComment = new ProductComment();
         productComment.setComment(commentDTO.getComment());
@@ -66,7 +64,6 @@ public class CommentService {
         }
         //step 3. modify reviews status
         commentMapper.modifyOrderStatus(commentDTO.getStars(), commentDTO.getOrderId(), commentDTO.getPdId());
-
         return Result.success("发布成功");
     }
 
@@ -83,19 +80,14 @@ public class CommentService {
             return Result.error("访问出现错误");
         }
     }
-
     public List<CommentViewDTO> retrieveComment(Integer pdId, Integer offset) {
         List<CommentViewDTO> commentViewDTOList = new ArrayList<>();
         try {
             Product product = productMapper.queryProductInfo(pdId);
-            if (Objects.isNull(product)) {
-                return commentViewDTOList;
-            }
+            if (Objects.isNull(product)) {return commentViewDTOList;}
             //find product reviews
             List<ProductComment> productComments = commentMapper.readProductReviews(pdId, 5, offset);
-            if (productComments.isEmpty()) {
-                return commentViewDTOList;
-            }
+            if (productComments.isEmpty()) {return commentViewDTOList;}
             productComments.forEach(item -> {
                 CommentViewDTO commentViewDTO = new CommentViewDTO();
                 commentViewDTO.setComment(item.getComment());
@@ -103,18 +95,15 @@ public class CommentService {
                 //find reviews picture path
                 List<ProductCommentFile> productCommentFiles = commentMapper.readProductReviewsFile(item.getId());
                 if (!productCommentFiles.isEmpty()) {
-                    //defined a list
-                    List<String> imgList = new ArrayList<>();
+                    List<String> imgList = new ArrayList<>();//defined a list
                     productCommentFiles.forEach(k -> {
                         imgList.add(k.getFile_name());
                     });
                     commentViewDTO.setImages(imgList);
                 }
-                //find user info
-                User userInfo = manageMapper.findUserId(String.valueOf(item.getUser_id()));
+                User userInfo = manageMapper.findUserId(String.valueOf(item.getUser_id())); //find user info
                 if (!Objects.isNull(userInfo)) {
-                    //write user info
-                    commentViewDTO.setGender(userInfo.getGender());
+                    commentViewDTO.setGender(userInfo.getGender());//write user info
                     commentViewDTO.setUserName(userInfo.getUser_name());
                 }
                 commentViewDTOList.add(commentViewDTO);

@@ -45,18 +45,11 @@ public class UserController {
         if (Objects.isNull(systemUser)) {
             return new Result("0", "登录失败,账号或密码有误，请检查。", "账号或密码有误，请检查。");
         }
-//        String userName = login.get(0).getUser_name();
-//        String userPhone = login.get(0).getPhone();
-//        Integer Uid = login.get(0).getId();//获取用户ID
         HashMap<String, Object> claims = new HashMap<>();
         //token中不要放敏感信息
-//        claims.put("name", userName);//用户名
-//        claims.put("phone", userPhone);//手机号
         claims.put("id", systemUser.getId()); //用户ID
         claims.put("expired", new Date().getTime() + JwtUtil.TIME); //过期时间
-//        System.out.println("用户id是：" + login.get(0).getId());
         String token = JwtUtil.jwtBuilder(claims);//下发token
-//        new UserLoginDTO(user,token);
         return new Result("1", "登录成功", new UserLoginDTO(systemUser, token));
     }
 

@@ -1,6 +1,7 @@
 package com.lam.mapper;
 
 import com.lam.pojo.Cart;
+import com.lam.responseDTO.CartViewDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
@@ -12,8 +13,8 @@ public interface CartMapper {
     @Insert("insert into cart(amount, pd_id, uid,join_time) VALUES(#{amount},#{pd_id},#{uid},#{join_time})")
     public void addCart(Integer amount, Integer pd_id, Integer uid, LocalDateTime join_time) throws Exception;
 //查询用户的购物车中有哪些商品
-    @Select("select id, amount, pd_id,join_time from cart where uid = #{uid}")
-    public List<Cart> querySelfCart(Integer uid);
+    @Select("select c.id ,c.amount,c.join_time,c.pd_id,p.p_name,p.p_describe,p.price,p.pd_type,p.picture_name from cart c join product p on p.pd_id = c.pd_id where c.uid = #{uid} order by c.join_time desc")
+    public List<CartViewDTO> querySelfCart(Integer uid);
 
 //    删除某样商品
     @Delete("delete from cart where id = #{id} and uid = #{uid}")

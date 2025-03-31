@@ -5,6 +5,7 @@ import com.lam.mapper.CartMapper;
 import com.lam.pojo.Cart;
 import com.lam.pojo.Result;
 import com.lam.pojo.TokenUserInfo;
+import com.lam.responseDTO.CartViewDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +62,7 @@ public class CartController {
         TokenUserInfo tokenUserInfo = UserTheadLocal.get();
         System.out.println(tokenUserInfo);
         //从token中取出用户id
-        List<Cart> carts = cartMapper.querySelfCart(tokenUserInfo.getId());
+        List<CartViewDTO> carts = cartMapper.querySelfCart(tokenUserInfo.getId());
         return Result.success(carts);
     }
 
