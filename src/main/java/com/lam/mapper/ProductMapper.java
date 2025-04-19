@@ -43,7 +43,7 @@ public interface ProductMapper {
     public void deletePictureInfo(Integer pt_id) throws Exception;
     //查询商品的信息 根据商品id
     @Select("select * from product where pd_id = #{pdId}")
-    public Product queryProductInfo(Integer pdId) throws Exception;
+    public Product queryProductInfo(Integer pdId);
 
     //暂不分页 搜索
     @Select("select * from product where p_describe like concat('%',#{keyword},'%') limit 10 offset 0 ")
@@ -57,5 +57,8 @@ public interface ProductMapper {
      //according to category retrieval
     @Select("select pd_id, price, state, p_name, p_describe, picture_name, pd_type, time, number, updatetime, display, sale from product where pd_type=#{category} order by time desc limit 10 offset #{offset}")
      public List<Product> retrievalProductCategory(String category,Integer offset);
+
+    @Update("update product set number = number - #{number} where pd_id = #{pdId} and number = #{originNumber} ")
+    public int updateProductQuantity(Integer number,Integer pdId,Integer originNumber);
 
 }

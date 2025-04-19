@@ -6,6 +6,7 @@ import com.lam.pojo.Product;
 import com.lam.pojo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,29 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
     //private int relevance[] = new int[10]
+
+
+    public Result checkoutDetection(Integer pdId, Integer number) throws Exception {
+        int maxRetries = 10;
+        while (true) {
+            maxRetries --;
+            //query the quantity of product
+            Product product = productMapper.queryProductInfo(pdId);
+            if (product.getNumber() >= number) {
+                int isUpdate = productMapper.updateProductQuantity(number, pdId, product.getNumber());
+                if (isUpdate != 0) {
+                    return Result.success("下单成功");
+                }
+            } else {
+                //update quantity of product
+                throw new Exception("库存不足");
+            }
+            if(maxRetries <= 0){
+                throw new Exception("超出重试次数");
+//                return Result.error("请求超时，请重试。");
+            }
+        }
+    }
 
     public Result writeProductData(AddProductDTO addProductDTO) {
         try {

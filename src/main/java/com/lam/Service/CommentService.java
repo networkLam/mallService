@@ -159,7 +159,7 @@ public class CommentService {
             String url = "http://localhost:5000/wordCloud";
             ResponseEntity<String> forEntity = requestHttp.restTemplate().postForEntity(url, request, String.class);
             String body = forEntity.getBody();
-            log.info("body is = {}", body);
+//            log.info("body is = {}", body);
             return Result.success(body);
         } catch (Exception e) {
             e.printStackTrace();

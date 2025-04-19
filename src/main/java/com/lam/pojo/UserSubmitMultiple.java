@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+//@RestController
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +16,6 @@ public class UserSubmitMultiple {
     private List<Product_Info> productList;//购买商品的列表
     private Integer add_id;//下单的地址
     private Integer gate;  //表示从那个界面进入的 有购物车和直接购买
-    @RestController
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
